@@ -1,0 +1,19 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/PayrollSystem.Business/bin/Debug/net6.0
+/PayrollSystem/bin
+/PayrollSystem/obj
+/PayrollSystem.Entity/obj
+/PayrollSystem.Entity/bin/Debug/net6.0
+/PayrollSystem.Entity.Models/bin/Debug/net6.0
+/PayrollSystem.Core/bin/Debug/net6.0
+/ExceptionHandling/bin/Debug/net6.0
+/ExceptionHandling/obj
+/PayrollSystem.Business/obj
+/.vs
+/PayrollSystem.Core/obj
+/PayrollSystem.Data/obj
+/PayrollSystem.Data/bin/Debug/net6.0
+/PayrollSystem.Entity.Models/obj

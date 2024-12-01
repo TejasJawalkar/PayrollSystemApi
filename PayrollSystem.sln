@@ -1,0 +1,86 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35222.181
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PayrollSystem", "PayrollSystem\PayrollSystem.csproj", "{B5B1D2A6-3B81-4FB4-A3C5-93ABE63F3306}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0E138349-F37F-4D9E-936E-5005E6A84197} = {0E138349-F37F-4D9E-936E-5005E6A84197}
+		{2889B3B7-AF54-4CD3-A06D-7C32FEEF4C15} = {2889B3B7-AF54-4CD3-A06D-7C32FEEF4C15}
+		{4E7855E6-E5D7-4BD5-A143-FC936B3AA695} = {4E7855E6-E5D7-4BD5-A143-FC936B3AA695}
+		{5955992A-5FE1-4745-95EC-DFBF613A4942} = {5955992A-5FE1-4745-95EC-DFBF613A4942}
+		{CBB9481F-7AB8-49B8-88E6-BE6F9791BD6A} = {CBB9481F-7AB8-49B8-88E6-BE6F9791BD6A}
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PayrollSystem.Data", "PayrollSystem.Data\PayrollSystem.Data.csproj", "{5955992A-5FE1-4745-95EC-DFBF613A4942}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7D4796AC-A754-4C49-8C71-C8DA5FF73929} = {7D4796AC-A754-4C49-8C71-C8DA5FF73929}
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PayrollSystem.Entity", "PayrollSystem.Entity\PayrollSystem.Entity.csproj", "{2889B3B7-AF54-4CD3-A06D-7C32FEEF4C15}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5955992A-5FE1-4745-95EC-DFBF613A4942} = {5955992A-5FE1-4745-95EC-DFBF613A4942}
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PayrollSystem.Business", "PayrollSystem.Business\PayrollSystem.Business.csproj", "{4E7855E6-E5D7-4BD5-A143-FC936B3AA695}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0E138349-F37F-4D9E-936E-5005E6A84197} = {0E138349-F37F-4D9E-936E-5005E6A84197}
+		{2889B3B7-AF54-4CD3-A06D-7C32FEEF4C15} = {2889B3B7-AF54-4CD3-A06D-7C32FEEF4C15}
+		{5955992A-5FE1-4745-95EC-DFBF613A4942} = {5955992A-5FE1-4745-95EC-DFBF613A4942}
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PayrollSystem.Core", "PayrollSystem.Core\PayrollSystem.Core.csproj", "{0E138349-F37F-4D9E-936E-5005E6A84197}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2889B3B7-AF54-4CD3-A06D-7C32FEEF4C15} = {2889B3B7-AF54-4CD3-A06D-7C32FEEF4C15}
+		{5955992A-5FE1-4745-95EC-DFBF613A4942} = {5955992A-5FE1-4745-95EC-DFBF613A4942}
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExceptionHandling", "ExceptionHandling\ExceptionHandling.csproj", "{CBB9481F-7AB8-49B8-88E6-BE6F9791BD6A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0E138349-F37F-4D9E-936E-5005E6A84197} = {0E138349-F37F-4D9E-936E-5005E6A84197}
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PayrollSystem.Entity.Models", "PayrollSystem.Entity.Models\PayrollSystem.Entity.Models.csproj", "{7D4796AC-A754-4C49-8C71-C8DA5FF73929}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B5B1D2A6-3B81-4FB4-A3C5-93ABE63F3306}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5B1D2A6-3B81-4FB4-A3C5-93ABE63F3306}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5B1D2A6-3B81-4FB4-A3C5-93ABE63F3306}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5B1D2A6-3B81-4FB4-A3C5-93ABE63F3306}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5955992A-5FE1-4745-95EC-DFBF613A4942}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5955992A-5FE1-4745-95EC-DFBF613A4942}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5955992A-5FE1-4745-95EC-DFBF613A4942}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5955992A-5FE1-4745-95EC-DFBF613A4942}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2889B3B7-AF54-4CD3-A06D-7C32FEEF4C15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2889B3B7-AF54-4CD3-A06D-7C32FEEF4C15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2889B3B7-AF54-4CD3-A06D-7C32FEEF4C15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2889B3B7-AF54-4CD3-A06D-7C32FEEF4C15}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E7855E6-E5D7-4BD5-A143-FC936B3AA695}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E7855E6-E5D7-4BD5-A143-FC936B3AA695}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E7855E6-E5D7-4BD5-A143-FC936B3AA695}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E7855E6-E5D7-4BD5-A143-FC936B3AA695}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E138349-F37F-4D9E-936E-5005E6A84197}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E138349-F37F-4D9E-936E-5005E6A84197}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E138349-F37F-4D9E-936E-5005E6A84197}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E138349-F37F-4D9E-936E-5005E6A84197}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CBB9481F-7AB8-49B8-88E6-BE6F9791BD6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBB9481F-7AB8-49B8-88E6-BE6F9791BD6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBB9481F-7AB8-49B8-88E6-BE6F9791BD6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBB9481F-7AB8-49B8-88E6-BE6F9791BD6A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D4796AC-A754-4C49-8C71-C8DA5FF73929}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D4796AC-A754-4C49-8C71-C8DA5FF73929}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D4796AC-A754-4C49-8C71-C8DA5FF73929}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D4796AC-A754-4C49-8C71-C8DA5FF73929}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {62F76887-BD82-4C6E-97EB-9FF037228A9C}
+	EndGlobalSection
+EndGlobal
