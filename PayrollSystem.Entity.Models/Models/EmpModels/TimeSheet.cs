@@ -17,6 +17,7 @@ namespace PayrollSystem.Entity.Models.Employee
         public DateTime LogOutTime { get; set; }
         public String LogoutLocation { get; set; }
         public Int32 TotalHoursWorked { get; set; }
+        public String AttendanceFlag {get;set;}
         public Employee employee { get; set; }
     }
 }

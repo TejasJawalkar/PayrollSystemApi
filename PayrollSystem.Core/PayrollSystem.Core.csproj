@@ -33,13 +33,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PayrollSystem.Data\PayrollSystem.Data.csproj" />
+    <ProjectReference Include="..\PayrollSystem.Entity\PayrollSystem.Entity.csproj" />
   </ItemGroup>
-
-
-	<ItemGroup>
-		<Reference Include="PayrollSystem.Entity">
-			<HintPath>..\PayrollSystem\bin\Release\net6.0\PayrollSystem.Entity.dll</HintPath>
-		</Reference>
-	</ItemGroup>
 
 </Project>

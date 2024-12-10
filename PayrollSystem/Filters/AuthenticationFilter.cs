@@ -57,6 +57,9 @@ namespace PayrollSystem.Filters
             List<string> allowedApis = new List<string>();
             allowedApis.Add("EmployeeLogin");
             allowedApis.Add("NewRegister");
+            allowedApis.Add("InsertUserLogs");
+            allowedApis.Add("InsertExceptionLogs");
+
             return allowedApis;
         }
     }

@@ -15,7 +15,7 @@ using PayrollSystem.Core.HR;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//string AllowedSpecificOrigins = "CorsPolicy";
+string AllowedSpecificOrigins = "CorsPolicy";
 
 string? env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 if(env==null)
@@ -29,13 +29,13 @@ else
         ,true).AddEnvironmentVariables();
 }
 
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("RequiredRolePolicy", policy =>
-    {
-        policy.RequireClaim("Role", "2", "3", "4", "5");
-    });
-});
+//builder.Services.AddAuthorization(options =>
+//{
+//    options.AddPolicy("RequiredRolePolicy", policy =>
+//    {
+//        policy.RequireClaim("Role", "2", "3", "4", "5");
+//    });
+//});
 builder.Services.AddHttpClient();
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 builder.Services.AddOptions();
@@ -83,7 +83,7 @@ builder.Services.AddAuthentication(x =>
 string[] origins = builder.Configuration["ApiSettings:AllowedDomains"].Split(',');
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("CorsPolicy", policy =>
+    options.AddPolicy(AllowedSpecificOrigins, policy =>
     {
         policy.WithOrigins(origins)
               .AllowAnyHeader()
@@ -112,7 +112,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseCors("CorsPolicy");
+app.UseCors(AllowedSpecificOrigins);
 app.UseMiddleware(typeof(ExcetionHandlingMiddleware));
 app.UseStaticFiles();
 app.UseRouting();

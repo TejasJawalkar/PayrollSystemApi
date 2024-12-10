@@ -30,6 +30,10 @@ namespace PayrollSystem.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("TimeSheetId"), 1L, 1);
 
+                    b.Property<string>("AttendanceFlag")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<long>("EmployeeId")
                         .HasColumnType("bigint");
 
@@ -60,6 +64,24 @@ namespace PayrollSystem.Migrations
                     b.ToTable("DailyTimeSheet");
                 });
 
+            modelBuilder.Entity("PayrollSystem.Entity.Models.Employee.Department", b =>
+                {
+                    b.Property<long>("DepartmentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("DepartmentId"), 1L, 1);
+
+                    b.Property<string>("DepartementName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("DepartmentId");
+
+                    b.ToTable("Departments");
+                });
+
             modelBuilder.Entity("PayrollSystem.Entity.Models.Employee.Employee", b =>
                 {
                     b.Property<long>("EmployeeId")
@@ -67,6 +89,9 @@ namespace PayrollSystem.Migrations
                         .HasColumnType("bigint");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("EmployeeId"), 1L, 1);
+
+                    b.Property<long>("DepartmentId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("EmployeeName")
                         .IsRequired()
@@ -85,7 +110,8 @@ namespace PayrollSystem.Migrations
 
                     b.Property<string>("OrganisationEmail")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<long>("OrgnisationID")
                         .HasColumnType("bigint");
@@ -98,6 +124,8 @@ namespace PayrollSystem.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("EmployeeId");
+
+                    b.HasIndex("DepartmentId");
 
                     b.HasIndex("OrganisationEmail")
                         .IsUnique();
@@ -234,6 +262,53 @@ namespace PayrollSystem.Migrations
                     b.ToTable("Payments");
                 });
 
+            modelBuilder.Entity("PayrollSystem.Entity.Models.Employee.UserLeave", b =>
+                {
+                    b.Property<long>("LeaveId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("LeaveId"), 1L, 1);
+
+                    b.Property<DateTime>("AppliedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("AppliedReason")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("ApprovedBy")
+                        .HasColumnType("int");
+
+                    b.Property<long>("EmployeeId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("FromDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<double>("NoofDays")
+                        .HasColumnType("float");
+
+                    b.Property<string>("RejectedReason")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("Status")
+                        .HasMaxLength(10)
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ToDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("LeaveId");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.ToTable("UserLeaves");
+                });
+
             modelBuilder.Entity("PayrollSystem.Entity.Models.Logging.ExceptionLog", b =>
                 {
                     b.Property<long>("ExceptionId")
@@ -314,11 +389,19 @@ namespace PayrollSystem.Migrations
 
             modelBuilder.Entity("PayrollSystem.Entity.Models.Employee.Employee", b =>
                 {
+                    b.HasOne("PayrollSystem.Entity.Models.Employee.Department", "Departments")
+                        .WithMany("Employees")
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("PayrollSystem.Entity.Models.Employee.Orgnisations", "orgnisations")
                         .WithMany("employees")
                         .HasForeignKey("OrgnisationID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Departments");
 
                     b.Navigation("orgnisations");
                 });
@@ -345,6 +428,22 @@ namespace PayrollSystem.Migrations
                     b.Navigation("Employee");
                 });
 
+            modelBuilder.Entity("PayrollSystem.Entity.Models.Employee.UserLeave", b =>
+                {
+                    b.HasOne("PayrollSystem.Entity.Models.Employee.Employee", "employees")
+                        .WithMany("userLeaves")
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("employees");
+                });
+
+            modelBuilder.Entity("PayrollSystem.Entity.Models.Employee.Department", b =>
+                {
+                    b.Navigation("Employees");
+                });
+
             modelBuilder.Entity("PayrollSystem.Entity.Models.Employee.Employee", b =>
                 {
                     b.Navigation("dailyTimeSheets");
@@ -352,6 +451,8 @@ namespace PayrollSystem.Migrations
                     b.Navigation("employeeSecurities");
 
                     b.Navigation("paymentDatas");
+
+                    b.Navigation("userLeaves");
                 });
 
             modelBuilder.Entity("PayrollSystem.Entity.Models.Employee.Orgnisations", b =>

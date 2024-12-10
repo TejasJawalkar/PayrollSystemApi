@@ -5,10 +5,23 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace PayrollSystem.Migrations
 {
-    public partial class databasecreate : Migration
+    public partial class addallmodels : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Departments",
+                columns: table => new
+                {
+                    DepartmentId = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DepartementName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Departments", x => x.DepartmentId);
+                });
+
             migrationBuilder.CreateTable(
                 name: "ExceptionLogs",
                 columns: table => new
@@ -18,6 +31,7 @@ namespace PayrollSystem.Migrations
                     ClassName = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     ActionName = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     ExceptionMessage = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    SiteName = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     CreatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -77,8 +91,9 @@ namespace PayrollSystem.Migrations
                     EmployeeId = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OrgnisationID = table.Column<long>(type: "bigint", nullable: false),
+                    DepartmentId = table.Column<long>(type: "bigint", nullable: false),
                     EmployeeName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    OrganisationEmail = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    OrganisationEmail = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     PersonalEmail = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Mobile = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MobileNoCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -88,6 +103,12 @@ namespace PayrollSystem.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Employee", x => x.EmployeeId);
+                    table.ForeignKey(
+                        name: "FK_Employee_Departments_DepartmentId",
+                        column: x => x.DepartmentId,
+                        principalTable: "Departments",
+                        principalColumn: "DepartmentId",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Employee_Orgnisations_OrgnisationID",
                         column: x => x.OrgnisationID,
@@ -108,7 +129,8 @@ namespace PayrollSystem.Migrations
                     LoginLocation = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LogOutTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LogoutLocation = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TotalHoursWorked = table.Column<int>(type: "int", nullable: false)
+                    TotalHoursWorked = table.Column<int>(type: "int", nullable: false),
+                    AttendanceFlag = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -163,10 +185,42 @@ namespace PayrollSystem.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "UserLeaves",
+                columns: table => new
+                {
+                    LeaveId = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    EmployeeId = table.Column<long>(type: "bigint", nullable: false),
+                    AppliedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<int>(type: "int", maxLength: 10, nullable: false),
+                    ApprovedBy = table.Column<int>(type: "int", nullable: false),
+                    AppliedReason = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    RejectedReason = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    FromDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ToDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    NoofDays = table.Column<double>(type: "float", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserLeaves", x => x.LeaveId);
+                    table.ForeignKey(
+                        name: "FK_UserLeaves_Employee_EmployeeId",
+                        column: x => x.EmployeeId,
+                        principalTable: "Employee",
+                        principalColumn: "EmployeeId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_DailyTimeSheet_EmployeeId",
                 table: "DailyTimeSheet",
                 column: "EmployeeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Employee_DepartmentId",
+                table: "Employee",
+                column: "DepartmentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Employee_OrganisationEmail",
@@ -188,6 +242,11 @@ namespace PayrollSystem.Migrations
                 name: "IX_Payments_EmployeeId",
                 table: "Payments",
                 column: "EmployeeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserLeaves_EmployeeId",
+                table: "UserLeaves",
+                column: "EmployeeId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -205,10 +264,16 @@ namespace PayrollSystem.Migrations
                 name: "Payments");
 
             migrationBuilder.DropTable(
+                name: "UserLeaves");
+
+            migrationBuilder.DropTable(
                 name: "UserLogs");
 
             migrationBuilder.DropTable(
                 name: "Employee");
+
+            migrationBuilder.DropTable(
+                name: "Departments");
 
             migrationBuilder.DropTable(
                 name: "Orgnisations");

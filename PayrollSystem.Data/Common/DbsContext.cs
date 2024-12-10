@@ -13,6 +13,9 @@ namespace PayrollSystem.Data.Common
         public DbSet<Orgnisations> Orgnisations { get; set; }
         public DbSet<ExceptionLog> ExceptionLogs { get; set; }
         public DbSet<UserLogs> UserLogs { get; set; }
+        public DbSet<DailyTimeSheet> DailyTimeSheet { get; set; }
+        public DbSet<UserLeave> UserLeaves { get; set; }
+        public DbSet<Department> Departments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -36,6 +39,18 @@ namespace PayrollSystem.Data.Common
                 .WithMany(p => p.dailyTimeSheets)
                 .HasForeignKey(p => p.EmployeeId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<UserLeave>()
+                .HasOne(p => p.employees)
+                .WithMany(p => p.userLeaves)
+                .HasForeignKey(p => p.EmployeeId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Employee>()
+              .HasOne(e => e.Departments)
+              .WithMany(o => o.Employees)
+              .HasForeignKey(e => e.DepartmentId)
+              .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

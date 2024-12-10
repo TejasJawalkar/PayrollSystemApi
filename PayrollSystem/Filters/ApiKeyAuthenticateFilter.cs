@@ -15,7 +15,6 @@ namespace PayrollSystem.Filters
 
         public void OnAuthorization(AuthorizationFilterContext context)
         {
-            Console.WriteLine(context.HttpContext.Request.Headers.ToString());
             // Retrieve the API Key from the request headers
             var apiKeyValue = context.HttpContext.Request.Headers["apikeyvalue"].ToString();
 
