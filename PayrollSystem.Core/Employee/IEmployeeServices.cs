@@ -7,6 +7,6 @@ namespace PayrollSystem.Core.Employee
     public interface IEmployeeServices
     {
         public Task<TokenOutput> EmployeeLogin(EmployeeLoginInput employeeLoginInput, ResponseModel response);
-        public Task NewRegister(String EmailId, String Password, ResponseModel response);
+        public Task<Int32> NewRegister(String EmailId, String Password, ResponseModel response);
     }
 }

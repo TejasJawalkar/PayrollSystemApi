@@ -102,17 +102,19 @@ namespace PayrollSystem.Core.Employee
             return employeeDetails;
         }
 
-        public async Task NewRegister(string EmailId, string Password, ResponseModel response)
+        public async Task<Int32> NewRegister(string EmailId, string Password, ResponseModel response)
         {
+            Int32 result = 0;
             try
             {
                 var procedure = "EmployeeRegister";
                 var parameters=new DynamicParameters();
                 parameters.Add("EmailId", EmailId, System.Data.DbType.String, System.Data.ParameterDirection.Input);
                 parameters.Add("Password", Password, System.Data.DbType.String, System.Data.ParameterDirection.Input);
+                parameters.Add("result", System.Data.DbType.Int32,direction: System.Data.ParameterDirection.Output);
                 using (var con=_dapperDbContext.CreateConnection())
                 {
-                    await con.QueryMultipleAsync(procedure,parameters,commandType:System.Data.CommandType.StoredProcedure);
+                    result=await con.ExecuteAsync(procedure,parameters,commandType:System.Data.CommandType.StoredProcedure).ContinueWith(t => parameters.Get<Int32>("result"));
                 }
             }
             catch (Exception ex)
@@ -121,6 +123,7 @@ namespace PayrollSystem.Core.Employee
                 response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.UnknowError;
                 await _logServices.InsertExceptionLogs(this.GetType().Name, Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["action"]), ex.Message, _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
             }
+            return result;
         }
     }
 }

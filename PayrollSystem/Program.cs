@@ -9,14 +9,14 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.Extensions.Options;
 using ExceptionHandling;
-using PayrollSystem.Core.HR;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 var builder = WebApplication.CreateBuilder(args);
 
 string AllowedSpecificOrigins = "CorsPolicy";
-
+//Add - Migration InitialMigration - Context DbsContext command to add new migration
+//update-database - to create or update database
 string? env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 if(env==null)
 {
@@ -45,7 +45,7 @@ DependencyInjection.Injectctor(builder.Services);
 var sqlconnection = builder.Configuration.GetConnectionString("ConnectionLink");
 
 builder.Services.AddDbContext<DbsContext>(options =>options.UseSqlServer(sqlconnection, b =>b.MigrationsAssembly("PayrollSystem")));
-builder.Services.AddDbContext<DbsContext>(options => options.UseSqlServer(sqlconnection));
+//builder.Services.AddDbContext<DbsContext>(options => options.UseSqlServer(sqlconnection));
 
 
 builder.Services.AddSingleton<DapperDbContext>(new DapperDbContext(sqlconnection));

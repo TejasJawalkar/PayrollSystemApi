@@ -1,41 +1,45 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿
+using System.ComponentModel.DataAnnotations;
 
 namespace PayrollSystem.Entity.Models.Employee
 {
     public class Employee
     {
+        #region Properties
         [Key]
         public Int64 EmployeeId { get; set; }
-
         [Required]
         public Int64 OrgnisationID { get; set; }
-
         [Required]
         public Int64 DepartmentId { get; set; }
-
+        public Int64 ManagerID { get; set; }
         public string EmployeeName { get; set; }
-
         [Required]
         [EmailAddress]
         [MaxLength(50)]
         public string OrganisationEmail { get; set; }
-
         public string PersonalEmail { get; set; }
-
+        [Required]
+        [MaxLength(50)]
         [Phone]
         public string Mobile { get; set; }
-
-        public string MobileNoCode { get; set; } = null;
-
-        public int Role { get; set; }
-
+        public string MobileNoCode { get; set; } = "";
+        [Required]
+        public Int64 RoleId { get; set; }
         public bool IsActive { get; set; } = true;
+        public bool IsPasswordChangeActive { get; set; } = true;
+#endregion
 
-        public Orgnisations orgnisations { get; set; }
-        public Department Departments { get; set; }
-        public ICollection<PaymentData> paymentDatas { get; set; }
-        public ICollection<EmployeeSecurity> employeeSecurities { get; set; }
-        public ICollection<DailyTimeSheet> dailyTimeSheets { get; set; }
-        public ICollection<UserLeave> userLeaves { get; set; } 
+        #region Relation References
+        public Orgnisations Orgnisations { get; set; }
+        public Department Department { get; set; }
+        public Designation Designation { get; set; }
+        public PaymentData PaymentData { get; set; }
+        public EmployeeSecurity EmployeeSecurity { get; set; }
+        public ReportingManagers ReportingManagers { get; set; }
+        public ICollection<UserLeave> UserLeaves { get; set; }
+        public ICollection<DailyTimeSheet> DailyTimeSheets { get; set; } 
+        public EmployeeManagers EmployeeManagers { get; set; } 
+        #endregion
     }
 }

@@ -26,7 +26,9 @@ namespace PayrollSystem.Entity.Models.Employee
         public DateTime ToDate { get; set; }
         [Required]
         public Double NoofDays { get; set; }
-        public Employee employees {get;set;}
-        
+
+        #region 
+        public Employee Employee { get; set; }
+        #endregion
     }
 }

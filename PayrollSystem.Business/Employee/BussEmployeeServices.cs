@@ -43,8 +43,9 @@ namespace PayrollSystem.Business.Employee
                     {
                         authenticationToken.Token = generateAuthenticationToken(tokenOutput);
                         authenticationToken.OrgnisationId = tokenOutput.OrgnisationId;
+                        authenticationToken.DepartmentId = tokenOutput.DepartmentId;
                         authenticationToken.EmployeeId = tokenOutput.EmployeeId;
-                        authenticationToken.Role = tokenOutput.Role;
+                        authenticationToken.Role = tokenOutput.RoleId;
 
                         response.Message += "Login Success";
                         response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.Success;
@@ -77,7 +78,8 @@ namespace PayrollSystem.Business.Employee
                     new Claim("EmployeeId",tokenOutput.EmployeeId.ToString()),
                     new Claim("OrganisationId",tokenOutput.OrgnisationId.ToString()),
                     new Claim("OrgnisationEmail",tokenOutput.OrgnisationEmail.ToString()),
-                    new Claim("Role",tokenOutput.Role.ToString()),
+                    new Claim("RoleId",tokenOutput.RoleId.ToString()),
+                    new Claim("DepartmentId",tokenOutput.DepartmentId.ToString()),
                     new Claim("IsActive",tokenOutput.IsActive.ToString()),
                 };
                 var key = Encoding.ASCII.GetBytes(_configuration.GetSection("AuthConfig:Secret").Get<String>());
@@ -133,13 +135,27 @@ namespace PayrollSystem.Business.Employee
 
         public async Task NewRegister(string EmailId, string Password, ResponseModel response)
         {
+            Int32 result;
             try
             {
-                await _employeeServices.NewRegister(EmailId, Password, response);
+                result=await _employeeServices.NewRegister(EmailId, Password, response);
                 if (response.ObjectStatusCode != Entity.InputOutput.Common.StatusCodes.UnknowError)
                 {
-                    response.Message += "New Password Registration Success";
-                    response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.Success;
+                    if(result==1)
+                    {
+                        response.Message += "New Password Registration Success";
+                        response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.Success;
+                    }
+                    else if (result == 3)
+                    {
+                        response.Message += "New Password Not Allowed";
+                        response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.Success;
+                    }
+                    else
+                    {
+                        response.Message += "New Password Registration Failed";
+                        response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.Error;
+                    }
                 }
                 else
                 {

@@ -7,50 +7,85 @@ namespace PayrollSystem.Data.Common
 {
     public class DbsContext : DbContext
     {
-        public DbsContext(DbContextOptions<DbsContext> options) : base(options){}
+        #region Constructor
+        public DbsContext(DbContextOptions<DbsContext> options) : base(options) { }
+        #endregion
+
+        #region All DbSet
         public DbSet<Employee> Employee { get; set; }
-        public DbSet<PaymentData> Payments { get; set; }
-        public DbSet<Orgnisations> Orgnisations { get; set; }
+        public DbSet<PaymentData> PaymentDetails { get; set; }
+        public DbSet<Orgnisations> Oragnizations { get; set; }
         public DbSet<ExceptionLog> ExceptionLogs { get; set; }
         public DbSet<UserLogs> UserLogs { get; set; }
         public DbSet<DailyTimeSheet> DailyTimeSheet { get; set; }
         public DbSet<UserLeave> UserLeaves { get; set; }
         public DbSet<Department> Departments { get; set; }
+        public DbSet<Designation> Roles { get; set; }
+        public DbSet<ReportingManagers> Managers { get; set; }
+        public DbSet<EmployeeManagers> EmployeeManagers { get; set; }
+        #endregion
 
+        #region OnModelCreating
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            #region OneToOneRelations
             modelBuilder.Entity<Employee>()
-               .HasOne(e => e.orgnisations)
-               .WithMany(o => o.employees)
-               .HasForeignKey(e => e.OrgnisationID)
-               .OnDelete(DeleteBehavior.Cascade);
+                .HasOne(o => o.Orgnisations)
+                .WithOne(e => e.Employee)
+                .HasForeignKey<Orgnisations>(fk => fk.OrgnisationID);
 
-            // Configure Employee to PaymentData relationship
-            modelBuilder.Entity<PaymentData>()
-                .HasOne(p => p.Employee)
-                .WithMany(e => e.paymentDatas)
-                .HasForeignKey(p => p.EmployeeId)
-                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Employee>()
+                .HasOne(d => d.Department)
+                .WithOne(e => e.Employee)
+                .HasForeignKey<Department>(fk => fk.DepartmentId);
 
-            modelBuilder.Entity<Employee>().HasIndex(p => p.OrganisationEmail).IsUnique();
+            modelBuilder.Entity<Designation>()
+                .HasOne(e => e.Employee)
+                .WithOne(d => d.Designation)
+                .HasForeignKey<Employee>(fk => fk.EmployeeId);
+
+            modelBuilder.Entity<EmployeeSecurity>()
+              .HasOne(e => e.Employee)
+              .WithOne(d => d.EmployeeSecurity)
+              .HasForeignKey<Employee>(fk => fk.EmployeeId);
+
+            modelBuilder.Entity<Employee>()
+             .HasOne(e => e.ReportingManagers)
+             .WithOne(d => d.Employee)
+             .HasForeignKey<ReportingManagers>(fk => fk.EmployeeId);
+
+            modelBuilder.Entity<Employee>()
+             .HasOne(e => e.PaymentData)
+             .WithOne(d => d.Employee)
+             .HasForeignKey<PaymentData>(fk => fk.EmployeeId);
+
+            modelBuilder.Entity<EmployeeManagers>()
+            .HasOne(e => e.Employee)
+            .WithOne(em => em.EmployeeManagers)
+            .HasForeignKey<Employee>(e => e.EmployeeId);
+            #endregion
+
+            #region OneToManyRelations
+            modelBuilder.Entity<UserLeave>()
+               .HasOne(e => e.Employee)
+               .WithMany(ul => ul.UserLeaves)
+               .HasForeignKey(ul => ul.EmployeeId);
 
             modelBuilder.Entity<DailyTimeSheet>()
-                .HasOne(p => p.employee)
-                .WithMany(p => p.dailyTimeSheets)
-                .HasForeignKey(p => p.EmployeeId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasOne(e => e.Employee)
+                .WithMany(dts => dts.DailyTimeSheets)
+                .HasForeignKey(ds => ds.EmployeeId);
+            #endregion
 
-            modelBuilder.Entity<UserLeave>()
-                .HasOne(p => p.employees)
-                .WithMany(p => p.userLeaves)
-                .HasForeignKey(p => p.EmployeeId)
-                .OnDelete(DeleteBehavior.Cascade);
+            #region ManyToManyRelations
+            modelBuilder.Entity<EmployeeManagers>()
+                .HasOne(m=>m.ReportingManagers)
+                .WithMany(em=>em.EmployeeManagers)
+                .HasForeignKey(e => e.ManagerId);
+            #endregion
 
-            modelBuilder.Entity<Employee>()
-              .HasOne(e => e.Departments)
-              .WithMany(o => o.Employees)
-              .HasForeignKey(e => e.DepartmentId)
-              .OnDelete(DeleteBehavior.Cascade);
         }
+        #endregion
+
     }
 }

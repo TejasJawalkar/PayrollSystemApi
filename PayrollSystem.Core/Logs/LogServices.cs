@@ -36,7 +36,7 @@ namespace PayrollSystem.Core.Logs
             }
             catch (Exception ex)
             {
-                await InsertExceptionLogs(this.GetType().Name, Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["action"]), ex.Message, _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
+                Console.WriteLine(ex.Message);
             }
         }
 

@@ -1,16 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿
+using System.ComponentModel.DataAnnotations;
 
 namespace PayrollSystem.Entity.Models.Employee
 {
-    public class EmployeeSecurity
+    public class Designation
     {
         #region Properties
         [Key]
-        public Int64 UserSecurityId { get; set; }
+        public Int64 RoleId { get; set; }
         [Required]
-        public Int64 EmployeeId { get; set; }
-        [Required]
-        public Byte[] UserPassword { get; set; }
+        [MaxLength(100)]
+        public string Role { get; set; }
         #endregion
 
         #region Relation References

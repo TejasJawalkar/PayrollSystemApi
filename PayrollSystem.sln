@@ -3,15 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35222.181
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PayrollSystem", "PayrollSystem\PayrollSystem.csproj", "{B5B1D2A6-3B81-4FB4-A3C5-93ABE63F3306}"
-	ProjectSection(ProjectDependencies) = postProject
-		{0E138349-F37F-4D9E-936E-5005E6A84197} = {0E138349-F37F-4D9E-936E-5005E6A84197}
-		{2889B3B7-AF54-4CD3-A06D-7C32FEEF4C15} = {2889B3B7-AF54-4CD3-A06D-7C32FEEF4C15}
-		{4E7855E6-E5D7-4BD5-A143-FC936B3AA695} = {4E7855E6-E5D7-4BD5-A143-FC936B3AA695}
-		{5955992A-5FE1-4745-95EC-DFBF613A4942} = {5955992A-5FE1-4745-95EC-DFBF613A4942}
-		{CBB9481F-7AB8-49B8-88E6-BE6F9791BD6A} = {CBB9481F-7AB8-49B8-88E6-BE6F9791BD6A}
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PayrollSystem.Data", "PayrollSystem.Data\PayrollSystem.Data.csproj", "{5955992A-5FE1-4745-95EC-DFBF613A4942}"
 	ProjectSection(ProjectDependencies) = postProject
 		{7D4796AC-A754-4C49-8C71-C8DA5FF73929} = {7D4796AC-A754-4C49-8C71-C8DA5FF73929}
@@ -42,16 +33,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExceptionHandling", "Except
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PayrollSystem.Entity.Models", "PayrollSystem.Entity.Models\PayrollSystem.Entity.Models.csproj", "{7D4796AC-A754-4C49-8C71-C8DA5FF73929}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PayrollSystem", "PayrollSystem\PayrollSystem.csproj", "{AD5E9B60-A85E-4A75-AA82-B08B9B48F7CD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B5B1D2A6-3B81-4FB4-A3C5-93ABE63F3306}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B5B1D2A6-3B81-4FB4-A3C5-93ABE63F3306}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B5B1D2A6-3B81-4FB4-A3C5-93ABE63F3306}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B5B1D2A6-3B81-4FB4-A3C5-93ABE63F3306}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5955992A-5FE1-4745-95EC-DFBF613A4942}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5955992A-5FE1-4745-95EC-DFBF613A4942}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5955992A-5FE1-4745-95EC-DFBF613A4942}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -76,6 +65,10 @@ Global
 		{7D4796AC-A754-4C49-8C71-C8DA5FF73929}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D4796AC-A754-4C49-8C71-C8DA5FF73929}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D4796AC-A754-4C49-8C71-C8DA5FF73929}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD5E9B60-A85E-4A75-AA82-B08B9B48F7CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD5E9B60-A85E-4A75-AA82-B08B9B48F7CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD5E9B60-A85E-4A75-AA82-B08B9B48F7CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD5E9B60-A85E-4A75-AA82-B08B9B48F7CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
