@@ -59,7 +59,7 @@ namespace PayrollSystem.Core.HR
             Int32 Result=0;
             try
             {
-                var procedure = "AddNewEmployee";
+                var procedure = "RegeisterNewEmployee";
                 var parameters = new DynamicParameters();
                 parameters.Add("OrgnisationID", newEmployee.OrgnisationID, System.Data.DbType.Int64, System.Data.ParameterDirection.Input);
                 parameters.Add("EmployeeName", newEmployee.EmployeeName, System.Data.DbType.String, System.Data.ParameterDirection.Input);

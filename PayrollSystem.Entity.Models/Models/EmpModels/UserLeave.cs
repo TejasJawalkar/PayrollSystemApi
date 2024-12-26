@@ -28,7 +28,7 @@ namespace PayrollSystem.Entity.Models.Employee
         public Double NoofDays { get; set; }
 
         #region 
-        public Employee Employee { get; set; }
+        public Employee Employee    { get; set; }
         #endregion
     }
 }

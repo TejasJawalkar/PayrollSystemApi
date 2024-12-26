@@ -7,7 +7,6 @@ namespace PayrollSystem.Entity.Models.Employee
         #region Properties
         [Key]
         public Int64 PaymentID { get; set; }
-        public Int64 EmployeeId { get; set; }
         [Required]
         public double CTC { get; set; }
         [Required]

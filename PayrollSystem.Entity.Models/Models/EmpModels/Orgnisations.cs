@@ -44,7 +44,7 @@ namespace PayrollSystem.Entity.Models.Employee
         public DateTime SystemRegisteredDate { get; set; } = DateTime.Now;
 
         #region Reference
-        public Employee Employee { get; set; }
+        public ICollection<Employee> Employees { get; set; }
         #endregion
     }
 

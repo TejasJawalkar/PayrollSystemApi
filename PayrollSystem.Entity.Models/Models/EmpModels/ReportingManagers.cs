@@ -14,10 +14,10 @@ namespace PayrollSystem.Entity.Models.Employee
         public Int64 ManagerID { get; set; }
         [Required]
         public Int64 EmployeeId { get; set; }
-
         #region 
         public Employee Employee { get; set; }
         public ICollection<EmployeeManagers> EmployeeManagers { get; set; }
+
         #endregion
     }
 }

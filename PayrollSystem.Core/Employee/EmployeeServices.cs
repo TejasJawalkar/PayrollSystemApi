@@ -1,4 +1,4 @@
-﻿
+﻿#region Imports
 using Dapper;
 using PayrollSystem.Core.Common;
 using PayrollSystem.Core.Logs;
@@ -6,16 +6,20 @@ using PayrollSystem.Data.Common;
 using PayrollSystem.Entity.InputOutput.Common;
 using PayrollSystem.Entity.InputOutput.Employee;
 using PayrollSystem.Entity.InputOutput.Login;
+#endregion
 
 namespace PayrollSystem.Core.Employee
 {
     public class EmployeeServices : IEmployeeServices,ICommonServices
     {
+        #region Objects
         private readonly DapperDbContext _dapperDbContext;
         private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ILogServices _logServices;
+        #endregion
 
+        #region Constructor
         public EmployeeServices(DapperDbContext dapperDbContext,IConfiguration configuration, IHttpContextAccessor httpContextAccessor, ILogServices logServices)
         {
             _configuration = configuration; 
@@ -23,7 +27,9 @@ namespace PayrollSystem.Core.Employee
             _httpContextAccessor = httpContextAccessor; 
             _logServices = logServices;
         }
+        #endregion
 
+        #region EmployeeLogin
         public async Task<TokenOutput> EmployeeLogin(EmployeeLoginInput employeeLoginInput, ResponseModel response)
         {
             TokenOutput tokenOutput = new TokenOutput();
@@ -47,7 +53,9 @@ namespace PayrollSystem.Core.Employee
             }
             return tokenOutput;
         }
+        #endregion
 
+        #region GetAllEmployee
         public async Task<OutputList> GetAllEmployee(long OrgnisationId, ResponseModel response)
         {
             OutputList outputList = new OutputList();
@@ -78,7 +86,9 @@ namespace PayrollSystem.Core.Employee
             }
             return outputList;
         }
+        #endregion
 
+        #region GetEmployee
         public async Task<EmployeeDetails> GetEmployee(Int64 Id, Int64 OrgnisationId, ResponseModel response)
         {
             EmployeeDetails employeeDetails = new EmployeeDetails();
@@ -101,20 +111,22 @@ namespace PayrollSystem.Core.Employee
             }
             return employeeDetails;
         }
+        #endregion
 
+        #region NewRegister
         public async Task<Int32> NewRegister(string EmailId, string Password, ResponseModel response)
         {
             Int32 result = 0;
             try
             {
-                var procedure = "EmployeeRegister";
-                var parameters=new DynamicParameters();
+                var procedure = "RegeisterNewPassword";
+                var parameters = new DynamicParameters();
                 parameters.Add("EmailId", EmailId, System.Data.DbType.String, System.Data.ParameterDirection.Input);
                 parameters.Add("Password", Password, System.Data.DbType.String, System.Data.ParameterDirection.Input);
-                parameters.Add("result", System.Data.DbType.Int32,direction: System.Data.ParameterDirection.Output);
-                using (var con=_dapperDbContext.CreateConnection())
+                parameters.Add("result", System.Data.DbType.Int32, direction: System.Data.ParameterDirection.Output);
+                using (var con = _dapperDbContext.CreateConnection())
                 {
-                    result=await con.ExecuteAsync(procedure,parameters,commandType:System.Data.CommandType.StoredProcedure).ContinueWith(t => parameters.Get<Int32>("result"));
+                    result = await con.ExecuteAsync(procedure, parameters, commandType: System.Data.CommandType.StoredProcedure).ContinueWith(t => parameters.Get<Int32>("result"));
                 }
             }
             catch (Exception ex)
@@ -125,5 +137,6 @@ namespace PayrollSystem.Core.Employee
             }
             return result;
         }
+        #endregion
     }
 }
