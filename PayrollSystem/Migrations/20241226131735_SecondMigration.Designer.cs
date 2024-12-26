@@ -12,8 +12,8 @@ using PayrollSystem.Data.Common;
 namespace PayrollSystem.Migrations
 {
     [DbContext(typeof(DbsContext))]
-    [Migration("20241219154143_initialdbschema")]
-    partial class initialdbschema
+    [Migration("20241226131735_SecondMigration")]
+    partial class SecondMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -97,6 +97,10 @@ namespace PayrollSystem.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<long>("Stamp")
+                        .HasMaxLength(10)
+                        .HasColumnType("bigint");
+
                     b.HasKey("RoleId");
 
                     b.ToTable("Roles");
@@ -119,6 +123,9 @@ namespace PayrollSystem.Migrations
                     b.Property<long>("PaymentID")
                         .HasColumnType("bigint");
 
+                    b.Property<long>("RoleId")
+                        .HasColumnType("bigint");
+
                     b.HasKey("EmployeeId");
 
                     b.HasIndex("DepartmentId")
@@ -127,6 +134,9 @@ namespace PayrollSystem.Migrations
                     b.HasIndex("OrganizationId");
 
                     b.HasIndex("PaymentID")
+                        .IsUnique();
+
+                    b.HasIndex("RoleId")
                         .IsUnique();
 
                     b.ToTable("Employee");
@@ -466,25 +476,25 @@ namespace PayrollSystem.Migrations
                     b.HasOne("PayrollSystem.Entity.Models.Employee.Department", "Department")
                         .WithOne("Employee")
                         .HasForeignKey("PayrollSystem.Entity.Models.Employee.Employee", "DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PayrollSystem.Entity.Models.Employee.Designation", "Designation")
-                        .WithOne("Employee")
-                        .HasForeignKey("PayrollSystem.Entity.Models.Employee.Employee", "DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("PayrollSystem.Entity.Models.Employee.Orgnisations", "Orgnisations")
                         .WithMany("Employees")
                         .HasForeignKey("OrganizationId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("PayrollSystem.Entity.Models.Employee.PaymentData", "PaymentData")
                         .WithOne("Employee")
                         .HasForeignKey("PayrollSystem.Entity.Models.Employee.Employee", "PaymentID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("PayrollSystem.Entity.Models.Employee.Designation", "Designation")
+                        .WithOne("Employee")
+                        .HasForeignKey("PayrollSystem.Entity.Models.Employee.Employee", "RoleId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Department");
@@ -501,7 +511,7 @@ namespace PayrollSystem.Migrations
                     b.HasOne("PayrollSystem.Entity.Models.Employee.Employee", "Employee")
                         .WithOne("EmployeeDetails")
                         .HasForeignKey("PayrollSystem.Entity.Models.Employee.EmployeeDetails", "EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Employee");
@@ -531,7 +541,7 @@ namespace PayrollSystem.Migrations
                     b.HasOne("PayrollSystem.Entity.Models.Employee.Employee", "Employee")
                         .WithOne("EmployeeSecurity")
                         .HasForeignKey("PayrollSystem.Entity.Models.Employee.EmployeeSecurity", "EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Employee");
@@ -542,7 +552,7 @@ namespace PayrollSystem.Migrations
                     b.HasOne("PayrollSystem.Entity.Models.Employee.Employee", "Employee")
                         .WithOne("ReportingManagers")
                         .HasForeignKey("PayrollSystem.Entity.Models.Employee.ReportingManagers", "EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Employee");

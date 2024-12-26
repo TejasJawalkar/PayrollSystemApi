@@ -34,36 +34,37 @@ namespace PayrollSystem.Data.Common
                 .HasOne(ed => ed.EmployeeDetails)
                 .WithOne(e => e.Employee)
                 .HasForeignKey<EmployeeDetails>(fk => fk.EmployeeId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Department>()
                 .HasOne(ed => ed.Employee)
                 .WithOne(e => e.Department)
                 .HasForeignKey<Employee>(fk => fk.DepartmentId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Designation>()
-                .HasOne(ed => ed.Employee)
-                .WithOne(e => e.Designation)
-                .HasForeignKey<Employee>(fk => fk.DepartmentId)
-                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Employee>()
+                .HasOne(ed => ed.Designation)
+                .WithOne(e => e.Employee)
+                .HasForeignKey<Employee>(fk => fk.RoleId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Employee>()
                 .HasOne(ed => ed.EmployeeSecurity)
                 .WithOne(e => e.Employee)
                 .HasForeignKey<EmployeeSecurity>(fk => fk.EmployeeId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<PaymentData>()
                .HasOne(ed => ed.Employee)
                .WithOne(e => e.PaymentData)
                .HasForeignKey<Employee>(fk => fk.PaymentID)
-               .OnDelete(DeleteBehavior.Cascade);
+               .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<ReportingManagers>()
                 .HasOne(e=>e.Employee)
                 .WithOne(m=>m.ReportingManagers)
-                .HasForeignKey<ReportingManagers>(fk=>fk.EmployeeId);
+                .HasForeignKey<ReportingManagers>(fk=>fk.EmployeeId)
+                .OnDelete(DeleteBehavior.Restrict);
             #endregion
 
             #region One To Many Relationship
@@ -71,7 +72,7 @@ namespace PayrollSystem.Data.Common
                 .HasOne(o=>o.Orgnisations)
                 .WithMany(e=>e.Employees)
                 .HasForeignKey(fk=>fk.OrganizationId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<DailyTimeSheet>()
                 .HasOne(e => e.Employee)

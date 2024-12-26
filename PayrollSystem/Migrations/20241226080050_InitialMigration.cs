@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace PayrollSystem.Migrations
 {
-    public partial class initialdbschema : Migration
+    public partial class InitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -120,7 +120,8 @@ namespace PayrollSystem.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OrganizationId = table.Column<long>(type: "bigint", nullable: false),
                     DepartmentId = table.Column<long>(type: "bigint", nullable: false),
-                    PaymentID = table.Column<long>(type: "bigint", nullable: false)
+                    PaymentID = table.Column<long>(type: "bigint", nullable: false),
+                    RoleId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -130,25 +131,25 @@ namespace PayrollSystem.Migrations
                         column: x => x.DepartmentId,
                         principalTable: "Departments",
                         principalColumn: "DepartmentId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Employee_Oragnizations_OrganizationId",
                         column: x => x.OrganizationId,
                         principalTable: "Oragnizations",
                         principalColumn: "OrgnisationID",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Employee_PaymentDetails_PaymentID",
                         column: x => x.PaymentID,
                         principalTable: "PaymentDetails",
                         principalColumn: "PaymentID",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Employee_Roles_DepartmentId",
-                        column: x => x.DepartmentId,
+                        name: "FK_Employee_Roles_RoleId",
+                        column: x => x.RoleId,
                         principalTable: "Roles",
                         principalColumn: "RoleId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -200,7 +201,7 @@ namespace PayrollSystem.Migrations
                         column: x => x.EmployeeId,
                         principalTable: "Employee",
                         principalColumn: "EmployeeId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -220,7 +221,7 @@ namespace PayrollSystem.Migrations
                         column: x => x.EmployeeId,
                         principalTable: "Employee",
                         principalColumn: "EmployeeId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -239,7 +240,7 @@ namespace PayrollSystem.Migrations
                         column: x => x.EmployeeId,
                         principalTable: "Employee",
                         principalColumn: "EmployeeId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -313,6 +314,12 @@ namespace PayrollSystem.Migrations
                 name: "IX_Employee_PaymentID",
                 table: "Employee",
                 column: "PaymentID",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Employee_RoleId",
+                table: "Employee",
+                column: "RoleId",
                 unique: true);
 
             migrationBuilder.CreateIndex(

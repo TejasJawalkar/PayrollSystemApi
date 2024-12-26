@@ -56,7 +56,7 @@ namespace PayrollSystem.Business.Employee
                         response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.Error;
                     }
                 }
-                response.Data = authenticationToken;
+                response.Data = tokenOutput.EmployeeId == 0 ? null:authenticationToken;
             }
             catch (Exception ex)
             {

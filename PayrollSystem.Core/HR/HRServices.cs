@@ -10,11 +10,14 @@ namespace PayrollSystem.Core.HR
 {
     public class HRServices : IHrServices, ICommonServices
     {
+        #region Object Declaration
         private readonly IConfiguration _configuration;
         private readonly DapperDbContext _dapperDbContext;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ILogServices _logger;
+        #endregion
 
+        #region Constructor
         public HRServices(IConfiguration configuration, DapperDbContext dapperDbContext, IHttpContextAccessor httpContextAccessor, ILogServices logger)
         {
             _configuration = configuration;
@@ -22,7 +25,9 @@ namespace PayrollSystem.Core.HR
             _httpContextAccessor = httpContextAccessor;
             _logger = logger;
         }
+        #endregion
 
+        #region GetAllEmployee
         public async Task<OutputList> GetAllEmployee(long OrgnisationId, ResponseModel response)
         {
             OutputList outputList = new OutputList();
@@ -53,7 +58,9 @@ namespace PayrollSystem.Core.HR
             }
             return outputList;
         }
+        #endregion
 
+        #region RegisterNewEmployee
         public async Task<Int32> RegisterNewEmployee(NewEmployeeInput newEmployee, ResponseModel response)
         {
             Int32 Result=0;
@@ -62,16 +69,22 @@ namespace PayrollSystem.Core.HR
                 var procedure = "RegeisterNewEmployee";
                 var parameters = new DynamicParameters();
                 parameters.Add("OrgnisationID", newEmployee.OrgnisationID, System.Data.DbType.Int64, System.Data.ParameterDirection.Input);
+                parameters.Add("DepartmentId", newEmployee.DepartmentId, System.Data.DbType.Int64, System.Data.ParameterDirection.Input);
+                parameters.Add("EmployeeId", newEmployee.EmployeeId, System.Data.DbType.Int64, System.Data.ParameterDirection.Input);
+                parameters.Add("RoleId", newEmployee.RoleId, System.Data.DbType.Int64, System.Data.ParameterDirection.Input);
                 parameters.Add("EmployeeName", newEmployee.EmployeeName, System.Data.DbType.String, System.Data.ParameterDirection.Input);
                 parameters.Add("OrganisationEmail", newEmployee.OrganisationEmail, System.Data.DbType.String, System.Data.ParameterDirection.Input);
                 parameters.Add("PersonalEmail", newEmployee.PersonalEmail, System.Data.DbType.String, System.Data.ParameterDirection.Input);
                 parameters.Add("Mobile", newEmployee.OrgnisationID, System.Data.DbType.String, System.Data.ParameterDirection.Input);
-                parameters.Add("role", newEmployee.OrgnisationID, System.Data.DbType.Int32, System.Data.ParameterDirection.Input);
-                parameters.Add("IsActive", newEmployee.IsActive, System.Data.DbType.Boolean, System.Data.ParameterDirection.Input);
-
+                parameters.Add("MobileNoCode", newEmployee.MobileNoCode, System.Data.DbType.String, System.Data.ParameterDirection.Input);
+                parameters.Add("CTC", newEmployee.CTC, System.Data.DbType.Double, System.Data.ParameterDirection.Input);
+                parameters.Add("GrossPay", newEmployee.GrossPay, System.Data.DbType.Double, System.Data.ParameterDirection.Input);
+                parameters.Add("NetPay", newEmployee.NetPay, System.Data.DbType.Double, System.Data.ParameterDirection.Input);
+                parameters.Add("result",System.Data.DbType.Int32, direction: System.Data.ParameterDirection.Output);
+                
                 using (var con = _dapperDbContext.CreateConnection())
                 {
-                    Result = await con.QueryFirstOrDefaultAsync<Int32>(procedure,parameters,commandType:System.Data.CommandType.StoredProcedure);
+                    Result = await con.QueryFirstOrDefaultAsync<Int32>(procedure,parameters,commandType:System.Data.CommandType.StoredProcedure).ContinueWith(t =>parameters.Get<Int32>("result"));
                 }
             }
             catch (Exception ex)
@@ -85,7 +98,9 @@ namespace PayrollSystem.Core.HR
             }
             return Result;
         }
+        #endregion
 
+        #region GetEmployee
         public async Task<EmployeeDetails> GetEmployee(Int64 Id, Int64 OrgnisationId, ResponseModel response)
         {
             EmployeeDetails employeeDetails = new EmployeeDetails();
@@ -108,5 +123,6 @@ namespace PayrollSystem.Core.HR
             }
             return employeeDetails;
         }
+        #endregion
     }
 }

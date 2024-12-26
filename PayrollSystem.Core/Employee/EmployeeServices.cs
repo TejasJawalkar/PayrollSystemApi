@@ -114,6 +114,13 @@ namespace PayrollSystem.Core.Employee
         #endregion
 
         #region NewRegister
+        /// <summary>
+        /// RegeisterNewPassword
+        /// </summary>
+        /// <param name="EmailId"></param>
+        /// <param name="Password"></param>
+        /// <param name="response"></param>
+        /// <returns></returns>
         public async Task<Int32> NewRegister(string EmailId, string Password, ResponseModel response)
         {
             Int32 result = 0;

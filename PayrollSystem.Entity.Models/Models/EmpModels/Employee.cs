@@ -12,6 +12,7 @@ namespace PayrollSystem.Entity.Models.Employee
         public Int64 OrganizationId { get; set; }
         public Int64 DepartmentId { get; set; }
         public Int64 PaymentID { get; set; }
+        public Int64 RoleId { get; set; }   
         #endregion
 
         #region Relation References

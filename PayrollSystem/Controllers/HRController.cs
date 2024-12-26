@@ -34,7 +34,7 @@ namespace PayrollSystem.Controllers
                 Int64 EmployeeId = Convert.ToInt64(currentUser.Claims.First(c => c.Type == "EmployeeId").Value);
                 if (EmployeeId != 0)
                 {
-                    if (newEmployeeInput.OrgnisationID != 0 || !string.IsNullOrEmpty(newEmployeeInput.OrganisationEmail) || !string.IsNullOrEmpty(newEmployeeInput.EmployeeName) | !string.IsNullOrEmpty(newEmployeeInput.PersonalEmail) || !string.IsNullOrEmpty(newEmployeeInput.Mobile) || newEmployeeInput.Role != null)
+                    if (newEmployeeInput.OrgnisationID != 0 || newEmployeeInput.DepartmentId != 0 || !string.IsNullOrEmpty(newEmployeeInput.OrganisationEmail) || !string.IsNullOrEmpty(newEmployeeInput.EmployeeName) | !string.IsNullOrEmpty(newEmployeeInput.PersonalEmail) || !string.IsNullOrEmpty(newEmployeeInput.Mobile) || newEmployeeInput.RoleId != 0)
                     {
                         await _hrServices.RegisterNewEmployee(newEmployeeInput, response);
                     }

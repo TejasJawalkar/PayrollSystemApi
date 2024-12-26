@@ -59,6 +59,9 @@ namespace PayrollSystem.Filters
             allowedApis.Add("NewRegister");
             allowedApis.Add("InsertUserLogs");
             allowedApis.Add("InsertExceptionLogs");
+            allowedApis.Add("AddOrganization");
+            allowedApis.Add("AddRoles");
+            allowedApis.Add("AddDepartments");
 
             return allowedApis;
         }
