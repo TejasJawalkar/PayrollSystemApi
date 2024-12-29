@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PayrollSystem.Data.Common;
 
@@ -11,9 +12,10 @@ using PayrollSystem.Data.Common;
 namespace PayrollSystem.Migrations
 {
     [DbContext(typeof(DbsContext))]
-    partial class DbsContextModelSnapshot : ModelSnapshot
+    [Migration("20241229122833_RelationUpdate")]
+    partial class RelationUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

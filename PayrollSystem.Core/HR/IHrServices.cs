@@ -7,7 +7,5 @@ namespace PayrollSystem.Core.HR
     public interface IHrServices
     {
         public Task<Int32> RegisterNewEmployee(NewEmployeeInput newEmployee, ResponseModel response);
-        
-        
     }
 }

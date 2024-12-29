@@ -19,10 +19,8 @@ namespace PayrollSystem.Injection
             services.AddSingleton<IHrServices,HRServices>();
             services.AddSingleton<IBussLogServices,BussLogServices>();
             services.AddSingleton<ILogServices,LogServices>();
-            services.AddSingleton<IBussCommonServices, BussEmployeeServices>();
-            services.AddSingleton<ICommonServices,EmployeeServices>();
-            services.AddSingleton<IBussCommonServices, BussHRServices>();
-            services.AddSingleton<ICommonServices, HRServices>();
+            services.AddScoped<IBussCommonTaskServices, BussCommonTaskServices>();   
+            services.AddScoped<ICommonTaskServices,CommonTaskServices>();
         }
     }
 }

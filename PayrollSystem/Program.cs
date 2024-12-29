@@ -45,10 +45,11 @@ DependencyInjection.Injectctor(builder.Services);
 var sqlconnection = builder.Configuration.GetConnectionString("ConnectionLink");
 
 builder.Services.AddDbContext<DbsContext>(options =>options.UseSqlServer(sqlconnection, b =>b.MigrationsAssembly("PayrollSystem")));
-//builder.Services.AddDbContext<DbsContext>(options => options.UseSqlServer(sqlconnection));
+builder.Services.AddDbContext<DbsContext>(options => options.UseSqlServer(sqlconnection));
 
 
 builder.Services.AddSingleton<DapperDbContext>(new DapperDbContext(sqlconnection));
+
 builder.Services.AddMvc(options =>
 {
     options.Filters.Add<AuthenticationFilter>();

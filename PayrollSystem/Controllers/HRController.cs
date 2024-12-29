@@ -14,17 +14,17 @@ namespace PayrollSystem.Controllers
     public class HRController : Controller
     {
         private readonly IBussHrServices _hrServices;
-        private readonly IBussCommonServices _bussCommonServices;
+        
 
-        public HRController(IBussHrServices hrServices, IBussCommonServices bussCommonServices)
+        public HRController(IBussHrServices hrServices)
         {
             _hrServices = hrServices;
-            _bussCommonServices = bussCommonServices;
+        
         }
 
         [HttpPost]
         [Route("/Admin/RegisterNewEmployee")]
-        [Authorize(Roles ="2,3,4,5")]
+        [Authorize]
         public async Task<JsonResult> RegisterNewEmployee(NewEmployeeInput newEmployeeInput)
         {
             ResponseModel response = new ResponseModel();
@@ -57,38 +57,5 @@ namespace PayrollSystem.Controllers
             }
             return Json(response);
         }
-
-        [HttpPost]
-        [Route("/Admin/GetAllEmployee")]
-        [Authorize(Roles ="1,2,3,4")]
-        public async Task<JsonResult> GetAllEmployee()
-        {
-            ResponseModel response = new ResponseModel();
-            try
-            {
-                var currentUser = HttpContext.User;
-                Int64 OrganisationId = Convert.ToInt64(currentUser.Claims.First(c=>c.Type== "OrganisationId").Value);
-                Int64 EmployeeId = Convert.ToInt64(currentUser.Claims.First(c => c.Type == "EmployeeId").Value);
-                if(EmployeeId!=0)
-                {
-                    if (OrganisationId != 0) 
-                    {
-                        await _bussCommonServices.GetAllEmployee(OrganisationId,response);
-                    }
-                }
-                else
-                {
-                    response.Message += "Invalid Token Access";
-                    response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.UnAuthorized;
-                }
-            }
-            catch (Exception)
-            {
-                response.Message += "Internal Server Error";
-                response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.UnknowError;
-            }
-            return Json(response);
-        }
-
     }
 }

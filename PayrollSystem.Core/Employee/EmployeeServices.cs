@@ -10,7 +10,7 @@ using PayrollSystem.Entity.InputOutput.Login;
 
 namespace PayrollSystem.Core.Employee
 {
-    public class EmployeeServices : IEmployeeServices,ICommonServices
+    public class EmployeeServices : IEmployeeServices
     {
         #region Objects
         private readonly DapperDbContext _dapperDbContext;
@@ -52,64 +52,6 @@ namespace PayrollSystem.Core.Employee
                 await _logServices.InsertExceptionLogs(this.GetType().Name,Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["action"]),ex.Message,_httpContextAccessor.HttpContext.Request.Host.Value.Trim());
             }
             return tokenOutput;
-        }
-        #endregion
-
-        #region GetAllEmployee
-        public async Task<OutputList> GetAllEmployee(long OrgnisationId, ResponseModel response)
-        {
-            OutputList outputList = new OutputList();
-            outputList.EmployeeDetails = new List<EmployeeDetails>();
-
-            try  
-            {
-                var procedure = "GetAllEmployee";
-                var parameters = new DynamicParameters();
-                parameters.Add("OrganisationId", OrgnisationId, System.Data.DbType.Int64, System.Data.ParameterDirection.Input);
-                using (var con = _dapperDbContext.CreateConnection())
-                {
-                    var reader = await con.QueryMultipleAsync(procedure, parameters, commandType: System.Data.CommandType.StoredProcedure);
-                    if (reader != null)
-                    {
-                        outputList.EmployeeDetails = reader.Read<EmployeeDetails>().ToList();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                await _logServices.InsertExceptionLogs(this.GetType().Name,
-                    Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["Action"]),
-                    ex.Message,
-                    _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
-                response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.UnknowError;
-                response.Message += "Employee Not Found";
-            }
-            return outputList;
-        }
-        #endregion
-
-        #region GetEmployee
-        public async Task<EmployeeDetails> GetEmployee(Int64 Id, Int64 OrgnisationId, ResponseModel response)
-        {
-            EmployeeDetails employeeDetails = new EmployeeDetails();
-            try
-            {
-                var procedure = "GetEmployee";
-                var parameters = new DynamicParameters();
-                parameters.Add("OrgnisationId", OrgnisationId,System.Data.DbType.Int64,System.Data.ParameterDirection.Input);
-                parameters.Add("Id", Id,System.Data.DbType.Int64,System.Data.ParameterDirection.Input);
-                using (var con=_dapperDbContext.CreateConnection())
-                {
-                    employeeDetails = await con.QueryFirstOrDefaultAsync<EmployeeDetails>(procedure,parameters,commandType:System.Data.CommandType.StoredProcedure);
-                }
-            }
-            catch (Exception ex)
-            {
-                response.Message += "Internal server error.Please try again.";
-                response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.UnknowError;
-                await _logServices.InsertExceptionLogs(this.GetType().Name, Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["action"]), ex.Message, _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
-            }
-            return employeeDetails;
         }
         #endregion
 

@@ -32,8 +32,8 @@ namespace PayrollSystem.Filters
 
                     if (EmployeeId != null)
                     {
-                        var OrgnisationId = token1.Claims.FirstOrDefault(c => c.Type == "OrgnisationId")?.Value;
-                        var Role = token1.Claims.FirstOrDefault(c => c.Type == "Role")?.Value;
+                        var OrgnisationId = token1.Claims.FirstOrDefault(c => c.Type == "OrganisationId")?.Value;
+                        var Role = token1.Claims.FirstOrDefault(c => c.Type == "RoleId")?.Value;
                         var TokenExpiryDate = token1.ValidTo;
                         DateTime UTCTime = System.DateTime.UtcNow;
                         DateTime IndianTime = TokenExpiryDate.AddHours(5.5);

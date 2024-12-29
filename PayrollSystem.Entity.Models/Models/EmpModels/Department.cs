@@ -13,7 +13,7 @@ namespace PayrollSystem.Entity.Models.Employee
         #endregion
 
         #region Relation References
-        public Employee Employee { get; set; }
+        public ICollection<Employee> Employee { get; set; }
         #endregion
     }
 }

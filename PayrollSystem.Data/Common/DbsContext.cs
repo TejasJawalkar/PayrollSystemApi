@@ -36,38 +36,38 @@ namespace PayrollSystem.Data.Common
                 .HasForeignKey<EmployeeDetails>(fk => fk.EmployeeId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Department>()
-                .HasOne(ed => ed.Employee)
-                .WithOne(e => e.Department)
-                .HasForeignKey<Employee>(fk => fk.DepartmentId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Employee>()
-                .HasOne(ed => ed.Designation)
-                .WithOne(e => e.Employee)
-                .HasForeignKey<Employee>(fk => fk.RoleId)
-                .OnDelete(DeleteBehavior.Restrict);
-
             modelBuilder.Entity<Employee>()
                 .HasOne(ed => ed.EmployeeSecurity)
                 .WithOne(e => e.Employee)
                 .HasForeignKey<EmployeeSecurity>(fk => fk.EmployeeId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<PaymentData>()
-               .HasOne(ed => ed.Employee)
-               .WithOne(e => e.PaymentData)
+            modelBuilder.Entity<Employee>()
+               .HasOne(ed => ed.PaymentData)
+               .WithOne(e => e.Employee)
                .HasForeignKey<Employee>(fk => fk.PaymentID)
                .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<ReportingManagers>()
-                .HasOne(e=>e.Employee)
-                .WithOne(m=>m.ReportingManagers)
+            modelBuilder.Entity<Employee>()
+                .HasOne(e=>e.ReportingManagers)
+                .WithOne(m=>m.Employee)
                 .HasForeignKey<ReportingManagers>(fk=>fk.EmployeeId)
                 .OnDelete(DeleteBehavior.Restrict);
             #endregion
 
             #region One To Many Relationship
+            modelBuilder.Entity<Employee>()
+               .HasOne(ed => ed.Department)
+               .WithMany(e => e.Employee)
+               .HasForeignKey(fk => fk.DepartmentId)
+               .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Employee>()
+                .HasOne(ed => ed.Designation)
+                .WithMany(e => e.Employee)
+                .HasForeignKey(fk => fk.RoleId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<Employee>()
                 .HasOne(o=>o.Orgnisations)
                 .WithMany(e=>e.Employees)

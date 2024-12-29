@@ -1,4 +1,5 @@
 ﻿
+#region
 using Azure;
 using Microsoft.IdentityModel.Tokens;
 using PayrollSystem.Business.Common;
@@ -11,25 +12,30 @@ using PayrollSystem.Entity.InputOutput.Login;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+#endregion
 
 namespace PayrollSystem.Business.Employee
 {
-    public class BussEmployeeServices : IBussEmployeeServices, IBussCommonServices
+    public class BussEmployeeServices : IBussEmployeeServices
     {
+        #region Object Declaration
         private readonly IEmployeeServices _employeeServices;
         private readonly IConfiguration _configuration;
         private readonly ILogServices _logger;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly ICommonServices _commonServices;
+        #endregion
 
-        public BussEmployeeServices(IEmployeeServices employeeServices, IConfiguration configuration, IHttpContextAccessor httpContextAccessor, ILogServices logger, ICommonServices commonServices)
+        #region Constructor
+        public BussEmployeeServices(IEmployeeServices employeeServices, IConfiguration configuration, IHttpContextAccessor httpContextAccessor, ILogServices logger)
         {
             _employeeServices = employeeServices;
             _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
             _logger = logger;
-            _commonServices=commonServices;
         }
+        #endregion
+
+        #region EmployeeLogin
         public async Task EmployeeLogin(EmployeeLoginInput employeeLoginInput, ResponseModel response)
         {
             TokenOutput tokenOutput = new TokenOutput();
@@ -68,7 +74,9 @@ namespace PayrollSystem.Business.Employee
                   _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
             }
         }
+        #endregion
 
+        #region generateAuthenticationToken
         public string generateAuthenticationToken(TokenOutput tokenOutput)
         {
             string encodetoken = "";
@@ -103,45 +111,25 @@ namespace PayrollSystem.Business.Employee
             }
             return encodetoken;
         }
+        #endregion
 
-        public async Task GetEmployee(long EmployeeId, long OrgnisationId, ResponseModel response)
-        {
-            EmployeeDetails employeeDetails = new EmployeeDetails();
-            try
-            {
-                employeeDetails = await _commonServices.GetEmployee(EmployeeId, OrgnisationId, response);
-                if (response.ObjectStatusCode != Entity.InputOutput.Common.StatusCodes.UnknowError)
-                {
-                    response.Message += "New Password Registration Success";
-                    response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.Success;
-                }
-                else
-                {
-                    response.Message += "New Password Registration Failed";
-                    response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.Error;
-                }
-                response.Data = employeeDetails;
-            }
-            catch (Exception ex)
-            {
-                response.Message += "Internal server error.Please try again.";
-                response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.UnknowError;
-                await _logger.InsertExceptionLogs(this.GetType().Name,
-                  Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["Action"]),
-                  ex.Message,
-                  _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
-            }
-        }
-
+        #region  NewRegister
+        /// <summary>
+        /// NewPasswordRegistration
+        /// </summary>
+        /// <param name="EmailId"></param>
+        /// <param name="Password"></param>
+        /// <param name="response"></param>
+        /// <returns></returns>
         public async Task NewRegister(string EmailId, string Password, ResponseModel response)
         {
             Int32 result;
             try
             {
-                result=await _employeeServices.NewRegister(EmailId, Password, response);
+                result = await _employeeServices.NewRegister(EmailId, Password, response);
                 if (response.ObjectStatusCode != Entity.InputOutput.Common.StatusCodes.UnknowError)
                 {
-                    if(result==1)
+                    if (result == 1)
                     {
                         response.Message += "New Password Registration Success";
                         response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.Success;
@@ -173,38 +161,7 @@ namespace PayrollSystem.Business.Employee
                     _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
             }
         }
+        #endregion
 
-        public async Task GetAllEmployee(long OrganisationId, ResponseModel response)
-        {
-            OutputList outputList = new OutputList();
-            try
-            {
-                outputList = await _commonServices.GetAllEmployee(OrganisationId, response);
-                if (response.ObjectStatusCode != Entity.InputOutput.Common.StatusCodes.UnknowError)
-                {
-                    if (outputList.EmployeeDetails.Count != 0)
-                    {
-                        response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.UnknowError;
-                        response.Message = "Employee List";
-
-                        response.Data = outputList.EmployeeDetails;
-                    }
-                    else
-                    {
-                        response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.UnknowError;
-                        response.Message = "No Employee's Found";
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                await _logger.InsertExceptionLogs(this.GetType().Name,
-                    Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["Action"]),
-                    ex.Message,
-                    _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
-                response.Message += "Internal server error.Please try again.";
-                response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.UnknowError;
-            }
-        }
     }
 }
