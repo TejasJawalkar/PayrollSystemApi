@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PayrollSystem.Data.Common;
 
@@ -11,9 +12,10 @@ using PayrollSystem.Data.Common;
 namespace PayrollSystem.Migrations
 {
     [DbContext(typeof(DbsContext))]
-    partial class DbsContextModelSnapshot : ModelSnapshot
+    [Migration("20250108143359_DailyTimeSheetPropertiesChanged")]
+    partial class DailyTimeSheetPropertiesChanged
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,6 +33,7 @@ namespace PayrollSystem.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("TimeSheetId"), 1L, 1);
 
                     b.Property<string>("AttendanceFlag")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("EmployeeId")
@@ -39,7 +42,7 @@ namespace PayrollSystem.Migrations
                     b.Property<DateTime?>("LogOutDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("LogOutTime")
+                    b.Property<DateTime>("LogOutTime")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("LoginDate")
@@ -53,10 +56,11 @@ namespace PayrollSystem.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("LogoutLocation")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double?>("TotalHoursWorked")
-                        .HasColumnType("float");
+                    b.Property<int>("TotalHoursWorked")
+                        .HasColumnType("int");
 
                     b.HasKey("TimeSheetId");
 

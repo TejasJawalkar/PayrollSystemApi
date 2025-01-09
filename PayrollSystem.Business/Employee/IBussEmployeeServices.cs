@@ -7,5 +7,7 @@ namespace PayrollSystem.Business.Employee
     {
         public Task EmployeeLogin(EmployeeLoginInput employeeLoginInput, ResponseModel response);
         public Task NewRegister(String EmailId, String Password, ResponseModel response);
+        public Task SignInStatus(EmployeeFormInput employeeFormInput, ResponseModel response);
+        public Task AddUpdateSignInSignOut(LoginLogoutFormInput loginLogoutFormInput, ResponseModel response);
     }
 }

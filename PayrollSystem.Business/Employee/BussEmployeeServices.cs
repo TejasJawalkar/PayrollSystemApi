@@ -1,17 +1,15 @@
 ﻿
 #region
-using Azure;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using Microsoft.IdentityModel.Tokens;
-using PayrollSystem.Business.Common;
-using PayrollSystem.Core.Common;
 using PayrollSystem.Core.Employee;
 using PayrollSystem.Core.Logs;
 using PayrollSystem.Entity.InputOutput.Common;
 using PayrollSystem.Entity.InputOutput.Employee;
 using PayrollSystem.Entity.InputOutput.Login;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+using PayrollSystem.Entity.Models.Employee;
 #endregion
 
 namespace PayrollSystem.Business.Employee
@@ -62,16 +60,13 @@ namespace PayrollSystem.Business.Employee
                         response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.Error;
                     }
                 }
-                response.Data = tokenOutput.EmployeeId == 0 ? null:authenticationToken;
+                response.Data = tokenOutput.EmployeeId == 0 ? null : authenticationToken;
             }
             catch (Exception ex)
             {
                 response.Message += "Internal server error.Please try again.";
                 response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.UnknowError;
-                await _logger.InsertExceptionLogs(this.GetType().Name,
-                  Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["Action"]),
-                  ex.Message,
-                  _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
+                await _logger.InsertExceptionLogs(Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["action"]), this.GetType().Name, ex.Message, _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
             }
         }
         #endregion
@@ -104,10 +99,7 @@ namespace PayrollSystem.Business.Employee
             }
             catch (Exception ex)
             {
-                _logger.InsertExceptionLogs(ex.Message,
-                   this.GetType().Name,
-                   Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["action"]),
-                   _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
+                _logger.InsertExceptionLogs(Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["action"]), this.GetType().Name, ex.Message, _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
             }
             return encodetoken;
         }
@@ -155,13 +147,119 @@ namespace PayrollSystem.Business.Employee
             {
                 response.Message += "Internal server error.Please try again.";
                 response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.UnknowError;
-                await _logger.InsertExceptionLogs(ex.Message,
-                    this.GetType().Name,
-                    Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["action"]),
-                    _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
+                await _logger.InsertExceptionLogs(Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["action"]), this.GetType().Name, ex.Message, _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
             }
         }
         #endregion
 
+        #region SignInStatus
+        /// <summary>
+        /// Get Sign In Status for change the button text on ui for sing In or sing Out  
+        /// </summary>
+        /// <param name="employeeFormInput"></param>
+        /// <param name="response"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task SignInStatus(EmployeeFormInput employeeFormInput, ResponseModel response)
+        {
+            Int32 result = 0;
+            try
+            {
+                result = await _employeeServices.SignInStatus(employeeFormInput, response);
+                if (response.ObjectStatusCode != Entity.InputOutput.Common.StatusCodes.UnknowError)
+                {
+                    if (result != 3 || result != 0)
+                    {
+                        response.Message += "Employee Found for Today";
+                        response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.Success;
+                    }
+                    else
+                    {
+                        response.Message += "Employee Not Found for Today";
+                        response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.Error;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Message += "Internal Server Error, Try Again Later";
+                response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.UnknowError;
+                await _logger.InsertExceptionLogs(Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["action"]), this.GetType().Name, ex.Message, _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
+            }
+            response.Data = result;
+        }
+        #endregion
+
+        #region AddUpdateSignInSignOut
+        /// <summary>
+        /// Add Update Sign In Sign Out
+        /// </summary>
+        /// <param name="employeeFormInput"></param>
+        /// <param name="response"></param>
+        /// <returns></returns>
+        public async Task AddUpdateSignInSignOut(LoginLogoutFormInput loginLogoutFormInput, ResponseModel response)
+        {
+            Int32 result = 0;
+            Double TotalHourseWorked = 0;
+            try
+            {
+                TotalHourseWorked = await GetCalculatedTotalHourseofEmployee(loginLogoutFormInput.EmployeeId, loginLogoutFormInput.LoginDate);
+                if (TotalHourseWorked != 0)
+                {
+                    loginLogoutFormInput.TotalHoursWorked = TotalHourseWorked;
+                }
+                result = await _employeeServices.AddUpdateSignInSignOut(loginLogoutFormInput, response);
+                if (result == 1)
+                {
+                    response.Message += "SignIn and SignOut Inserted/Updated";
+                    response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.Success;
+                }
+                else
+                {
+                    response.Message += "Employee Cannot SignIn/SignOut";
+                    response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.NotExists;
+                }
+                response.Data = result;
+            }
+            catch (Exception ex)
+            {
+                response.Message += "Internal Server Error, Try Again Later";
+                response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.UnknowError;
+                await _logger.InsertExceptionLogs(Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["action"]), this.GetType().Name, ex.Message, _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
+            }
+            response.Data = result;
+        }
+        #endregion
+
+        #region GetCalculatedTotalHourseofEmployee
+        private async Task<Double> GetCalculatedTotalHourseofEmployee(Int64 EmployeeId, DateTime LoginDate)
+        {
+
+            DailyTimeSheet dailyTimeSheet = null;
+            Double totalhourseWorked = 0;
+            try
+            {
+                dailyTimeSheet = await _employeeServices.TotalHoursWorkedCalculation(EmployeeId, LoginDate);
+
+                if (dailyTimeSheet != null)
+                {
+                    if (dailyTimeSheet.LoginTime.ToString().Trim() != null && dailyTimeSheet.LogOutTime.ToString().Trim() != null)
+                    {
+                        totalhourseWorked = Convert.ToDouble((dailyTimeSheet.LoginTime - dailyTimeSheet.LogOutTime));
+                    }
+                    return totalhourseWorked;
+                }
+                else
+                {
+                    return totalhourseWorked;
+                }
+            }
+            catch (Exception ex)
+            {
+                await _logger.InsertExceptionLogs(Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["action"]), this.GetType().Name, ex.Message, _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
+                return totalhourseWorked;
+            }
+        }
+        #endregion
     }
 }

@@ -1,12 +1,10 @@
 ﻿#region Imports
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PayrollSystem.Business.Common;
 using PayrollSystem.Business.Employee;
 using PayrollSystem.Entity.InputOutput.Common;
 using PayrollSystem.Entity.InputOutput.Employee;
 #endregion
-
 
 namespace PayrollSystem.Controllers
 {
@@ -15,7 +13,7 @@ namespace PayrollSystem.Controllers
         #region ObjectDeclaration
         private readonly IBussEmployeeServices _bussEmployeeServices;
         #endregion
-        
+
         #region Constructor
         public EmployeeController(IBussEmployeeServices bussEmployeeServices)
         {
@@ -66,6 +64,52 @@ namespace PayrollSystem.Controllers
             catch (Exception ex)
             {
                 response.Message += "Internal Server Error";
+                response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.UnknowError;
+            }
+            return Json(response);
+        }
+        #endregion
+
+        #region SignInStatus
+        /// <summary>
+        /// Get Sign In Status for change the button text on ui for sing In or sing Out  
+        /// </summary>
+        /// <param name="employeeFormInput"></param>
+        /// <param name="response"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<JsonResult> SignInStatus(EmployeeFormInput employeeFormInput)
+        {
+            ResponseModel response = new ResponseModel();
+            try
+            {
+                await _bussEmployeeServices.SignInStatus(employeeFormInput, response);
+            }
+            catch (Exception)
+            {
+                response.Message += "Internal Server Error, Try Again Later";
+                response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.UnknowError;
+            }
+            return Json(response);
+        }
+        #endregion
+
+        #region AddUpdateSignInSignOut
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="loginLogoutFormInput"></param>
+        /// <returns></returns>
+        public async Task<JsonResult> AddUpdateSignInSignOut(LoginLogoutFormInput loginLogoutFormInput)
+        {
+            ResponseModel response = new ResponseModel();
+            try
+            {
+                await _bussEmployeeServices.AddUpdateSignInSignOut(loginLogoutFormInput, response);
+            }
+            catch (Exception)
+            {
+                response.Message += "Internal Server Error, Try Again Later";
                 response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.UnknowError;
             }
             return Json(response);

@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using PayrollSystem.Business.Common;
 using PayrollSystem.Business.HR;
-using PayrollSystem.Core.HR;
 using PayrollSystem.Entity.InputOutput.Common;
 using PayrollSystem.Entity.InputOutput.HR;
 
@@ -13,15 +10,18 @@ namespace PayrollSystem.Controllers
 
     public class HRController : Controller
     {
+        #region Object Declaration
         private readonly IBussHrServices _hrServices;
-        
+        #endregion
 
+        #region Constructor
         public HRController(IBussHrServices hrServices)
         {
             _hrServices = hrServices;
-        
         }
+        #endregion
 
+        #region RegisterNewEmployee
         [HttpPost]
         [Route("/Admin/RegisterNewEmployee")]
         [Authorize]
@@ -57,5 +57,6 @@ namespace PayrollSystem.Controllers
             }
             return Json(response);
         }
+        #endregion
     }
 }

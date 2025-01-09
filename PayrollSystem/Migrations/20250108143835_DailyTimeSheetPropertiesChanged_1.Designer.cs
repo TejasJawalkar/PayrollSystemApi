@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PayrollSystem.Data.Common;
 
@@ -11,9 +12,10 @@ using PayrollSystem.Data.Common;
 namespace PayrollSystem.Migrations
 {
     [DbContext(typeof(DbsContext))]
-    partial class DbsContextModelSnapshot : ModelSnapshot
+    [Migration("20250108143835_DailyTimeSheetPropertiesChanged_1")]
+    partial class DailyTimeSheetPropertiesChanged_1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,16 +26,17 @@ namespace PayrollSystem.Migrations
 
             modelBuilder.Entity("PayrollSystem.Entity.Models.Employee.DailyTimeSheet", b =>
                 {
-                    b.Property<long>("TimeSheetId")
+                    b.Property<long?>("TimeSheetId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("TimeSheetId"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long?>("TimeSheetId"), 1L, 1);
 
                     b.Property<string>("AttendanceFlag")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("EmployeeId")
+                    b.Property<long?>("EmployeeId")
+                        .IsRequired()
                         .HasColumnType("bigint");
 
                     b.Property<DateTime?>("LogOutDate")
@@ -42,21 +45,23 @@ namespace PayrollSystem.Migrations
                     b.Property<DateTime?>("LogOutTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("LoginDate")
+                    b.Property<DateTime?>("LoginDate")
+                        .IsRequired()
                         .HasColumnType("datetime2");
 
                     b.Property<string>("LoginLocation")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("LoginTime")
+                    b.Property<DateTime?>("LoginTime")
+                        .IsRequired()
                         .HasColumnType("datetime2");
 
                     b.Property<string>("LogoutLocation")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double?>("TotalHoursWorked")
-                        .HasColumnType("float");
+                    b.Property<int?>("TotalHoursWorked")
+                        .HasColumnType("int");
 
                     b.HasKey("TimeSheetId");
 
