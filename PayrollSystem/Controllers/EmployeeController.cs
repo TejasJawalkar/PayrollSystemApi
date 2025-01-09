@@ -78,6 +78,10 @@ namespace PayrollSystem.Controllers
         /// <param name="response"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
+
+        [HttpPost]
+        [Route("Employee/GetLoginStatus")]
+        [Authorize]
         public async Task<JsonResult> SignInStatus(EmployeeFormInput employeeFormInput)
         {
             ResponseModel response = new ResponseModel();
@@ -100,6 +104,9 @@ namespace PayrollSystem.Controllers
         /// </summary>
         /// <param name="loginLogoutFormInput"></param>
         /// <returns></returns>
+        [HttpPost]
+        [Route("Employee/AddSignInSignOut")]
+        [Authorize]
         public async Task<JsonResult> AddUpdateSignInSignOut(LoginLogoutFormInput loginLogoutFormInput)
         {
             ResponseModel response = new ResponseModel();
@@ -114,6 +121,31 @@ namespace PayrollSystem.Controllers
             }
             return Json(response);
         }
+        #endregion
+
+        #region AddNewLeave
+        /// <summary>
+        /// Adding New Leave of Employee
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("Employee/AddLeave")]
+        [Authorize]
+        public async Task<JsonResult> AddNewLeave(UserLeaveInput userLeaveInput)
+        {
+            ResponseModel response = new ResponseModel();
+            try
+            {
+                await _bussEmployeeServices.AddNewLeave(userLeaveInput, response);
+            }
+            catch (Exception)
+            {
+                response.Message += "Internal Server Error, Try Again Later";
+                response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.UnknowError;
+            }
+            return Json(response);
+        }
+
         #endregion
     }
 }

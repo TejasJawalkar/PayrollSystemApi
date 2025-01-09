@@ -18,7 +18,7 @@ namespace PayrollSystem.Data.Common
         public DbSet<ExceptionLog> ExceptionLogs { get; set; }
         public DbSet<UserLogs> UserLogs { get; set; }
         public DbSet<DailyTimeSheet> DailyTimeSheet { get; set; }
-        public DbSet<UserLeave> UserLeaves { get; set; }
+        public DbSet<UserLeave> EmployeeLeaves { get; set; }
         public DbSet<Department> Departments { get; set; }
         public DbSet<Designation> Roles { get; set; }
         public DbSet<ReportingManagers> Managers { get; set; }
@@ -49,9 +49,9 @@ namespace PayrollSystem.Data.Common
                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Employee>()
-                .HasOne(e=>e.ReportingManagers)
-                .WithOne(m=>m.Employee)
-                .HasForeignKey<ReportingManagers>(fk=>fk.EmployeeId)
+                .HasOne(e => e.ReportingManagers)
+                .WithOne(m => m.Employee)
+                .HasForeignKey<ReportingManagers>(fk => fk.EmployeeId)
                 .OnDelete(DeleteBehavior.Restrict);
             #endregion
 
@@ -69,15 +69,15 @@ namespace PayrollSystem.Data.Common
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Employee>()
-                .HasOne(o=>o.Orgnisations)
-                .WithMany(e=>e.Employees)
-                .HasForeignKey(fk=>fk.OrganizationId)
+                .HasOne(o => o.Orgnisations)
+                .WithMany(e => e.Employees)
+                .HasForeignKey(fk => fk.OrganizationId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<DailyTimeSheet>()
                 .HasOne(e => e.Employee)
                 .WithMany(edt => edt.DailyTimeSheets)
-                .HasForeignKey(fk=>fk.EmployeeId)
+                .HasForeignKey(fk => fk.EmployeeId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<UserLeave>()
@@ -88,12 +88,12 @@ namespace PayrollSystem.Data.Common
             #endregion
 
             #region Many To Many 
-            modelBuilder.Entity<EmployeeManagers>().HasKey(ek => new {ek.EmployeeId,ek.ManagerId });
+            modelBuilder.Entity<EmployeeManagers>().HasKey(ek => new { ek.EmployeeId, ek.ManagerId });
 
             modelBuilder.Entity<EmployeeManagers>()
-                .HasOne(e=>e.Employee)
-                .WithMany(e=>e.EmployeeManagers)
-                .HasForeignKey(fk=>fk.EmployeeId)
+                .HasOne(e => e.Employee)
+                .WithMany(e => e.EmployeeManagers)
+                .HasForeignKey(fk => fk.EmployeeId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<EmployeeManagers>()

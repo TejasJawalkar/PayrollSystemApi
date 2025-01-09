@@ -209,7 +209,7 @@ namespace PayrollSystem.Business.Employee
                     loginLogoutFormInput.TotalHoursWorked = TotalHourseWorked;
                 }
                 result = await _employeeServices.AddUpdateSignInSignOut(loginLogoutFormInput, response);
-                if (result == 1)
+                if (result == 1 || result == 2)
                 {
                     response.Message += "SignIn and SignOut Inserted/Updated";
                     response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.Success;
@@ -258,6 +258,43 @@ namespace PayrollSystem.Business.Employee
             {
                 await _logger.InsertExceptionLogs(Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["action"]), this.GetType().Name, ex.Message, _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
                 return totalhourseWorked;
+            }
+        }
+        #endregion
+
+        #region AddNewLeave
+        /// <summary>
+        /// Employee Will Add New Leave
+        /// </summary>
+        /// <param name="userLeaveInput"></param>
+        /// <param name="response"></param>
+        /// <returns></returns>
+        public async Task AddNewLeave(UserLeaveInput userLeaveInput, ResponseModel response)
+        {
+            Int32 result = 0;
+            double TotalDays = 0;
+            try
+            {
+                TotalDays = (userLeaveInput.ToDate - userLeaveInput.FromDate).TotalDays;
+                userLeaveInput.NoofDays = TotalDays;
+                result = await _employeeServices.UserLeave(userLeaveInput, response);
+                if (result == 1)
+                {
+                    response.Message += "Employee Leaves Saved Successfully.";
+                    response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.Success;
+                }
+                else
+                {
+                    response.Message += "Employee Leaves Not Saved.";
+                    response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.Error;
+                }
+                response.Data = result;
+            }
+            catch (Exception ex)
+            {
+                await _logger.InsertExceptionLogs(Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["action"]), this.GetType().Name.ToString(), ex.Message.ToString(), Convert.ToString(_httpContextAccessor.HttpContext.Request.Host.Value.Trim()));
+                response.Message += "Internal Server Error, Try Again Later";
+                response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.UnknowError;
             }
         }
         #endregion
