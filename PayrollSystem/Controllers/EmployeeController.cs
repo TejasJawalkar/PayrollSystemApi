@@ -147,5 +147,40 @@ namespace PayrollSystem.Controllers
         }
 
         #endregion
+
+        #region GetLeaveStatus
+        /// <summary>
+        /// Employee Will See the Leave Status that is Approved or Pending
+        /// </summary>
+        /// <param name="EmployeeId"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("Employee/GetLeaveStatus")]
+        [Authorize]
+        public async Task<JsonResult> GetLeaveStatus(Int64 EmployeeId)
+        {
+            ResponseModel response = new ResponseModel();
+            try
+            {
+                var currentUser = HttpContext.User;
+                Int64 employeeId = Convert.ToInt64(currentUser.Claims.First(c => c.Type == "EmployeeId").Value);
+                if (employeeId != 0)
+                {
+                    await _bussEmployeeServices.GetLeaveStatus(employeeId, response);
+                }
+                else
+                {
+                    response.Message += "UnAuthorized Access";
+                    response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.UnAuthorized;
+                }
+            }
+            catch (Exception)
+            {
+                response.Message += "Internal Server Error, Try Again Later";
+                response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.UnknowError;
+            }
+            return Json(response);
+        }
+        #endregion
     }
 }

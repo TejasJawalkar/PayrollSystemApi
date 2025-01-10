@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace PayrollSystem.Entity.Models.Employee
 {
@@ -11,7 +6,7 @@ namespace PayrollSystem.Entity.Models.Employee
     {
         #region Properties
         [Key]
-        public Int64 EmployeeDetails_Id{get;set;}
+        public Int64 EmployeeDetails_Id { get; set; }
         public Int64 EmployeeId { get; set; }
         [Required]
         public string EmployeeName { get; set; }

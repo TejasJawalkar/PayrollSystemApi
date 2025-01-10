@@ -1,6 +1,7 @@
 ﻿
-using PayrollSystem.Entity.Models.Employee;
+#region Namespace
 using System.ComponentModel.DataAnnotations;
+#endregion
 
 namespace PayrollSystem.Entity.Models.Employee
 {
@@ -12,11 +13,13 @@ namespace PayrollSystem.Entity.Models.Employee
         public Int64 OrganizationId { get; set; }
         public Int64 DepartmentId { get; set; }
         public Int64 PaymentID { get; set; }
-        public Int64 RoleId { get; set; }   
+        public Int64 RoleId { get; set; }
+        public Int64 EmployeeLeavesAssignedId { get; set; }
         #endregion
 
         #region Relation References
         public EmployeeDetails EmployeeDetails { get; set; }
+        public EmployeeLeavesAssigned EmployeeLeavesAssigned { get; set; }
         public Orgnisations Orgnisations { get; set; }
         public Department Department { get; set; }
         public Designation Designation { get; set; }

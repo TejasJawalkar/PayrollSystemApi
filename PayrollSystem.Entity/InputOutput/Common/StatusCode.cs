@@ -8,6 +8,7 @@
         EmptyData = 4,
         UnAuthorized = 5,
         Exists = 6,
-        NotExists = 7
+        NotExists = 7,
+        LimitExceed = 8,
     }
 }

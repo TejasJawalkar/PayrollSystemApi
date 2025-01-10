@@ -13,6 +13,7 @@ namespace PayrollSystem.Business.Employee
         public Task SignInStatus(EmployeeFormInput employeeFormInput, ResponseModel response);
         public Task AddUpdateSignInSignOut(LoginLogoutFormInput loginLogoutFormInput, ResponseModel response);
         public Task AddNewLeave(UserLeaveInput userLeaveInput, ResponseModel response);
+        public Task GetLeaveStatus(Int64 EmployeeId, ResponseModel response);
         #endregion
     }
 }

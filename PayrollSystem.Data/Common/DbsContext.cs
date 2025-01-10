@@ -24,12 +24,19 @@ namespace PayrollSystem.Data.Common
         public DbSet<ReportingManagers> Managers { get; set; }
         public DbSet<EmployeeManagers> EmployeeManagers { get; set; }
         public DbSet<EmployeeDetails> EmployeeDetails { get; set; }
+        public DbSet<EmployeeLeavesAssigned> YearlyLeavesAssigned { get; set; }
         #endregion
 
         #region OnModelCreating
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             #region One To One Relationship
+            modelBuilder.Entity<Employee>()
+                .HasOne(ela => ela.EmployeeLeavesAssigned)
+                .WithOne(e => e.Employee)
+                .HasForeignKey<EmployeeLeavesAssigned>(ed => ed.EmployeeLeavesAssignedId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<Employee>()
                 .HasOne(ed => ed.EmployeeDetails)
                 .WithOne(e => e.Employee)

@@ -15,7 +15,8 @@ namespace PayrollSystem.Core.Employee
         public Task<Int32> SignInStatus(EmployeeFormInput employeeFormInput, ResponseModel response);
         public Task<Int32> AddUpdateSignInSignOut(LoginLogoutFormInput loginLogoutFormInput, ResponseModel response);
         public Task<DailyTimeSheet> TotalHoursWorkedCalculation(Int64 EmployeeId, DateTime LoginDate);
-        public Task<Int32> UserLeave(UserLeaveInput userLeaveInput, ResponseModel response);
+        public Task<Int32> AddNewLeave(UserLeaveInput userLeaveInput, ResponseModel response);
+        public Task<OutputList> GetLeaveStatus(Int64 EmployeeId, ResponseModel response);
         #endregion
     }
 }

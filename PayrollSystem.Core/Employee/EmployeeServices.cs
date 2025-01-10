@@ -180,5 +180,50 @@ namespace PayrollSystem.Core.Employee
             return Result;
         }
         #endregion
+
+        #region AddNewLeave
+        /// <summary>
+        /// Insert New Record of Leave
+        /// </summary>
+        /// <param name="userLeaveInput"></param>
+        /// <param name="response"></param>
+        /// <returns></returns>
+        public async Task<Int32> AddNewLeave(UserLeaveInput userLeaveInput, ResponseModel response)
+        {
+            Int32 Result = 0;
+            try
+            {
+                var procedure = "InsertEmployeeLeave";
+                var parameters = new DynamicParameters();
+                parameters.Add("EmployeeId", userLeaveInput.EmployeeId, System.Data.DbType.Int64, System.Data.ParameterDirection.Input);
+                parameters.Add("AppliedDate", userLeaveInput.AppliedDate.ToShortDateString(), System.Data.DbType.DateTime, System.Data.ParameterDirection.Input);
+                parameters.Add("Status", userLeaveInput.Status, System.Data.DbType.Int32, System.Data.ParameterDirection.Input);
+                parameters.Add("AppliedReason", userLeaveInput.AppliedReason, System.Data.DbType.String, System.Data.ParameterDirection.Input);
+                parameters.Add("FromDate", userLeaveInput.FromDate.ToShortDateString(), System.Data.DbType.DateTime, System.Data.ParameterDirection.Input);
+                parameters.Add("ToDate", userLeaveInput.ToDate.ToShortDateString(), System.Data.DbType.DateTime, System.Data.ParameterDirection.Input);
+                parameters.Add("NoofDay", userLeaveInput.NoofDays, System.Data.DbType.Double, System.Data.ParameterDirection.Input);
+                parameters.Add("result", System.Data.DbType.Int32, direction: System.Data.ParameterDirection.Output);
+
+                using (var con = _dapperDbContext.CreateConnection())
+                {
+                    Result = await con.ExecuteAsync(procedure, parameters, commandType: System.Data.CommandType.StoredProcedure).ContinueWith(c => parameters.Get<Int32>("result"));
+                }
+            }
+            catch (Exception ex)
+            {
+                await _logServices.InsertExceptionLogs(Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["action"]), this.GetType().Name, ex.Message, _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
+                response.Message += "Internal server error.Please try again.";
+                response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.UnknowError;
+            }
+            return Result;
+        }
+        #endregion
+
+        #region GetLeaveStatus
+        public Task<OutputList> GetLeaveStatus(long EmployeeId, ResponseModel response)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
     }
 }

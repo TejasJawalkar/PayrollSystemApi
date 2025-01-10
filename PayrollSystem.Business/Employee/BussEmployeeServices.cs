@@ -277,10 +277,15 @@ namespace PayrollSystem.Business.Employee
             {
                 TotalDays = (userLeaveInput.ToDate - userLeaveInput.FromDate).TotalDays;
                 userLeaveInput.NoofDays = TotalDays;
-                result = await _employeeServices.UserLeave(userLeaveInput, response);
+                result = await _employeeServices.AddNewLeave(userLeaveInput, response);
                 if (result == 1)
                 {
                     response.Message += "Employee Leaves Saved Successfully.";
+                    response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.Success;
+                }
+                else if (result == 8)
+                {
+                    response.Message += "Leave Balance is low than the No of Days.";
                     response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.Success;
                 }
                 else
@@ -292,6 +297,42 @@ namespace PayrollSystem.Business.Employee
             }
             catch (Exception ex)
             {
+                await _logger.InsertExceptionLogs(Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["action"]), this.GetType().Name.ToString(), ex.Message.ToString(), Convert.ToString(_httpContextAccessor.HttpContext.Request.Host.Value.Trim()));
+                response.Message += "Internal Server Error, Try Again Later";
+                response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.UnknowError;
+            }
+        }
+        #endregion
+
+        #region GetLeaveStatus
+        public async Task GetLeaveStatus(Int64 EmployeeId, ResponseModel response)
+        {
+            OutputList outputList = new OutputList();
+            try
+            {
+                outputList = await _employeeServices.GetLeaveStatus(EmployeeId, response);
+                if (response.ObjectStatusCode != Entity.InputOutput.Common.StatusCodes.UnknowError)
+                {
+                    if (outputList != null)
+                    {
+                        response.Message += "Employee Leave Status Found";
+                        response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.Success;
+                    }
+                    else
+                    {
+                        response.Message += "Employee Leave Status Not Found";
+                        response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.Error;
+                    }
+                }
+                else
+                {
+                    response.Message += "Employee Leave Status Not Found";
+                    response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.Error;
+                }
+            }
+            catch (Exception ex)
+            {
+
                 await _logger.InsertExceptionLogs(Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["action"]), this.GetType().Name.ToString(), ex.Message.ToString(), Convert.ToString(_httpContextAccessor.HttpContext.Request.Host.Value.Trim()));
                 response.Message += "Internal Server Error, Try Again Later";
                 response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.UnknowError;

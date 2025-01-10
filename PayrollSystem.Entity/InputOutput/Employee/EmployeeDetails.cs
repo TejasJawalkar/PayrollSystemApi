@@ -54,11 +54,14 @@ namespace PayrollSystem.Entity.InputOutput.Employee
         [FromForm] public Int64 EmployeeId { get; set; }
         [FromForm] public DateTime AppliedDate { get; set; }
         [FromForm] public Int32 Status { get; set; } = 1;
-        [FromForm] public String AppliedReason { get; set; }
+        [FromForm] public String? AppliedReason { get; set; }
         [FromForm] public DateTime FromDate { get; set; }
         [FromForm] public DateTime ToDate { get; set; }
-        [FromForm] public Double NoofDays { get; set; }
+        [FromForm] public Double? NoofDays { get; set; }
     }
     #endregion
+
+    #region 
+    #endregion 
 
 }
