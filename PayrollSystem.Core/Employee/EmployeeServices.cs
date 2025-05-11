@@ -49,9 +49,43 @@ namespace PayrollSystem.Core.Employee
             {
                 response.Message += "Internal server error.Please try again.";
                 response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.UnknowError;
-                await _logServices.InsertExceptionLogs(this.GetType().Name,Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["action"]),ex.Message,_httpContextAccessor.HttpContext.Request.Host.Value.Trim());
+                await _logServices.InsertExceptionLogs(Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["action"]), this.GetType().Name, ex.Message, _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
             }
             return tokenOutput;
+        }
+
+        #endregion
+
+        #region GetTodaySignInStatus
+        /// <summary>
+        /// Get Single Day Sign In Status for Employee for toggle text of sign In/sign out button on browser
+        /// </summary>
+        /// <param name="EmployeeId"></param>
+        /// <param name="TodayDate"></param>
+        /// <param name="response"></param>
+        /// <returns></returns>
+        public async Task<Int32> GetTodaySignInStatus(long EmployeeId, DateTime TodayDate, ResponseModel response)
+        {
+            Int32 Result = 0;
+            try
+            {
+                var storedprocedure= "GetSignInStatusofDay";
+                var parameters = new DynamicParameters();
+                parameters.Add("EmployeeId", EmployeeId,System.Data.DbType.Int64,System.Data.ParameterDirection.Input);
+                parameters.Add("TodayDate", TodayDate, System.Data.DbType.DateTime, System.Data.ParameterDirection.Input);
+                parameters.Add("result",direction: System.Data.ParameterDirection.Input);
+                using (var con=_dapperDbContext.CreateConnection())
+                {
+                    Result = await con.QueryMultipleAsync(storedprocedure,parameters,commandType:System.Data.CommandType.StoredProcedure).ContinueWith(e=> parameters.Get<Int32>("result"));
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Message += ex.Message;
+                response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.UnknowError;
+                await _logServices.InsertExceptionLogs(Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["action"]), this.GetType().Name, ex.Message, _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
+            }
+            return Result;
         }
         #endregion
 
@@ -82,7 +116,7 @@ namespace PayrollSystem.Core.Employee
             {
                 response.Message += "Internal server error.Please try again.";
                 response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.UnknowError;
-                await _logServices.InsertExceptionLogs(this.GetType().Name, Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["action"]), ex.Message, _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
+                await _logServices.InsertExceptionLogs( Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["action"]), this.GetType().Name, ex.Message, _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
             }
             return result;
         }

@@ -1,9 +1,13 @@
-﻿using Dapper;
+﻿#region Imports
+using Dapper;
+using Microsoft.EntityFrameworkCore;
 using PayrollSystem.Core.Logs;
 using PayrollSystem.Data.Common;
 using PayrollSystem.Entity.InputOutput.Common;
 using PayrollSystem.Entity.InputOutput.Employee;
+using PayrollSystem.Entity.InputOutput.System;
 using System.Data;
+#endregion
 
 namespace PayrollSystem.Core.Common
 {
@@ -29,15 +33,15 @@ namespace PayrollSystem.Core.Common
         #region GetRoles
         public async Task<OutputList> GetRoles(ResponseModel response)
         {
-            OutputList outputList= new OutputList();
+            OutputList outputList = new OutputList();
             outputList.Roles = new List<RolesOutput>();
             try
             {
-                outputList.Roles =  _DbsContext.Roles.Select(r=> new RolesOutput
+                outputList.Roles = _DbsContext.Roles.Select(r => new RolesOutput
                 {
-                    RoleId =r.RoleId,
-                    Role=r.Role,
-                    Stamp=r.Stamp,
+                    RoleId = r.RoleId,
+                    Role = r.Role,
+                    Stamp = r.Stamp,
                 }).ToList();
             }
             catch (Exception ex)
@@ -55,13 +59,14 @@ namespace PayrollSystem.Core.Common
 
         public async Task<OutputList> GetDepartments(ResponseModel response)
         {
-            OutputList outputList= new OutputList();
+            OutputList outputList = new OutputList();
             outputList.Departments = new List<DepartmentOutput>();
             try
             {
-                outputList.Departments = _DbsContext.Departments.Select(r => new DepartmentOutput {
-                    DepartmentId=r.DepartmentId,
-                DepartementName=r.DepartementName
+                outputList.Departments = _DbsContext.Departments.Select(r => new DepartmentOutput
+                {
+                    DepartmentId = r.DepartmentId,
+                    DepartementName = r.DepartementName
                 }).ToList();
             }
             catch (Exception ex)
@@ -131,5 +136,50 @@ namespace PayrollSystem.Core.Common
             return employeeDetails;
         }
         #endregion
+
+        #region GetOrganisationDetails
+        public async Task<OutputOrganization> GetOrganisationDetails(long OrganizationId, ResponseModel response)
+        {
+            OutputOrganization outputOrganization = new OutputOrganization();
+            try
+            {
+                outputOrganization = (from o in _DbsContext.Oragnizations
+                                      where o.OrgnisationID == OrganizationId
+                                      select new OutputOrganization
+                                      {
+                                          OrgnisationID = o.OrgnisationID,
+                                          OrgnizationName = o.OrgnizationName,
+                                          OrgnisationAddress = o.OrgnisationAddress,
+                                          OrgnisationCountry = o.OrgnisationCountry,
+                                          OrgnisationPincode = o.OrgnisationPincode,
+                                          OrgnisationStartDate = o.OrgnisationStartDate,
+                                          OrgnisationState = o.OrgnisationState,
+                                          OrgnisationDirectorName = o.OrgnisationDirectorName,
+                                          DirectorMobileNo = o.DirectorMobileNo,
+                                          DirectorEmail = o.DirectorEmail,
+                                          OrgnisationCeo = o.OrgnisationCeo,
+                                          CeoMobileNo = o.CeoMobileNo,
+                                          CeoEmail = o.CeoEmail,
+                                          OrgnisationGstNo=o.OrgnisationGstNo,
+                                          OrgnisationStartTime=  o.OrgnisationStartTime,
+                                          OrgnisationEndTime =o.OrgnisationEndTime,
+
+                                      }).FirstOrDefault();
+
+        }
+            catch (Exception ex)
+            {
+
+                await _logServices.InsertExceptionLogs(this.GetType().Name,
+                    Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["Action"]),
+                    ex.Message,
+                    _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
+        response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.UnknowError;
+                response.Message += "Employee Not Found";
+            }
+            return await Task.FromResult(outputOrganization);
+}
+        #endregion
+
     }
 }

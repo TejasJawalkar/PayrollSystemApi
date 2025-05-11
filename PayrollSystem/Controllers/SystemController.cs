@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PayrollSystem.Data.Common;
 using PayrollSystem.Entity.Models.Employee;
 
@@ -39,17 +40,17 @@ namespace PayrollSystem.Controllers
                 };
                 _bsContext.Oragnizations.Add(organization);
                 _bsContext.SaveChanges();
-                return Ok(new {message="Organisation Saved"});
+                return Ok(new { message = "Organisation Saved" });
             }
             catch (Exception)
             {
-                return StatusCode(500,"Internal Server Error");
+                return StatusCode(500, "Internal Server Error");
             }
         }
 
         [HttpPost]
         [Route("System/AddRoles")]
-        public IActionResult AddRoles([FromForm ]String RoleName )
+        public IActionResult AddRoles([FromForm] String RoleName)
         {
             try
             {
@@ -60,11 +61,11 @@ namespace PayrollSystem.Controllers
 
                 _bsContext.Roles.Add(roles);
                 _bsContext.SaveChanges();
-                return Ok(new {message="Role Added"});
+                return Ok(new { message = "Role Added" });
             }
             catch (Exception)
             {
-                return StatusCode(500,new {message="Internal Server Error"});
+                return StatusCode(500, new { message = "Internal Server Error" });
             }
         }
 
@@ -81,6 +82,22 @@ namespace PayrollSystem.Controllers
                 _bsContext.Departments.Add(department);
                 _bsContext.SaveChanges();
                 return Ok(new { message = "Department Added" });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { message = "Internal Server Error" });
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("System/GetDepartments")]
+        public IActionResult GetDepartments()
+        {
+            try
+            {
+                var departments = _bsContext.Departments.ToList();
+                return Ok(departments);
             }
             catch (Exception)
             {

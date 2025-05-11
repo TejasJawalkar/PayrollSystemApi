@@ -1,7 +1,10 @@
-﻿using PayrollSystem.Core.Common;
+﻿#region Imports
+using PayrollSystem.Core.Common;
 using PayrollSystem.Core.Logs;
 using PayrollSystem.Entity.InputOutput.Common;
 using PayrollSystem.Entity.InputOutput.Employee;
+using PayrollSystem.Entity.InputOutput.System;
+#endregion
 
 namespace PayrollSystem.Business.Common
 {
@@ -126,6 +129,32 @@ namespace PayrollSystem.Business.Common
                   Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["Action"]),
                   ex.Message,
                   _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
+            }
+        }
+        #endregion
+
+        #region GetOrganisationDetails
+        public async Task GetOrganisationDetails(Int64 OrganisationId,ResponseModel response)
+        {
+            OutputOrganization organization = new OutputOrganization();
+            try
+            {
+                organization = await _CommonTaskServices.GetOrganisationDetails(OrganisationId,response);
+                if (response.ObjectStatusCode!=Entity.InputOutput.Common.StatusCodes.UnknowError) 
+                {
+                    response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.Success;
+                    response.Message += "Organisation Details";
+                }
+                response.Data=organization;
+            }
+            catch (Exception ex)
+            {
+                await _logServices.InsertExceptionLogs(this.GetType().Name,
+                    Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["Action"]),
+                    ex.Message,
+                    _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
+                response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.UnknowError;
+                response.Message += "Intrnal Server Error, Try Again Later";
             }
         }
         #endregion

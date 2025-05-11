@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -27,6 +27,12 @@
 		<ProjectReference Include="..\PayrollSystem.Business\PayrollSystem.Business.csproj" />
 		<ProjectReference Include="..\PayrollSystem.Entity\PayrollSystem.Entity.csproj" />
 	</ItemGroup>
+
+	<!-- Pre-build target to kill w3wp.exe if it locks DLL -->
+	<Target Name="KillIISWorker" BeforeTargets="Build">
+		<Exec Command="taskkill /F /IM w3wp.exe" ContinueOnError="true" />
+	</Target>
+
 
 
 </Project>

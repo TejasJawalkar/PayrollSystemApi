@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <OutputType>Library</OutputType>
-    <BaseOutputPath></BaseOutputPath>
+    <BaseOutputPath>D:\Tutorials\Personal\myprojects\PayrollSystemApi\PayrollSystem\bin</BaseOutputPath>
   </PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

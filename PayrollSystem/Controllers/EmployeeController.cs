@@ -1,7 +1,6 @@
 ﻿#region Imports
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PayrollSystem.Business.Common;
 using PayrollSystem.Business.Employee;
 using PayrollSystem.Entity.InputOutput.Common;
 using PayrollSystem.Entity.InputOutput.Employee;
@@ -15,7 +14,7 @@ namespace PayrollSystem.Controllers
         #region ObjectDeclaration
         private readonly IBussEmployeeServices _bussEmployeeServices;
         #endregion
-        
+
         #region Constructor
         public EmployeeController(IBussEmployeeServices bussEmployeeServices)
         {
@@ -67,6 +66,42 @@ namespace PayrollSystem.Controllers
             {
                 response.Message += "Internal Server Error";
                 response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.UnknowError;
+            }
+            return Json(response);
+        }
+        #endregion
+
+        #region GetTodaySignInStatus
+        public async Task<JsonResult> GetTodaySignInStatus([FromForm] Int64 Employee_Id, [FromForm] DateTime TodatDate)
+        {
+            ResponseModel response = new ResponseModel();
+            try
+            {
+                await _bussEmployeeServices.GetTodaySignInStatus(Employee_Id, TodatDate, response);
+            }
+            catch (Exception)
+            {
+                response.Message += "Internal Server Error, Try Again Later";
+                response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.UnknowError;
+            }
+            return Json(response);
+        }
+        #endregion
+
+        #region Mark SignIn SignOut
+        [HttpPost]
+        [Route("Employee/UpdateTimeSheet")]
+        public async Task<JsonResult> MarkSignInSignOut()
+        {
+            ResponseModel response = new ResponseModel();
+            try
+            {
+
+            }
+            catch (Exception)
+            {
+
+                throw;
             }
             return Json(response);
         }

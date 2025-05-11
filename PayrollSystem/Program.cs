@@ -1,32 +1,32 @@
-using Microsoft.Data.SqlClient;
+﻿using System.Security.Claims;
+using System.Text;
+using ExceptionHandling;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 //using Microsoft.EntityFrameworkCore;
 using PayrollSystem.Data.Common;
 using PayrollSystem.Filters;
 using PayrollSystem.Injection;
-using System.Text;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Serialization;
-using Newtonsoft.Json;
-using Microsoft.IdentityModel.Tokens;
-using ExceptionHandling;
-using Microsoft.EntityFrameworkCore.Migrations;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.WebHost.UseIISIntegration();
 
 string AllowedSpecificOrigins = "CorsPolicy";
 //Add - Migration InitialMigration - Context DbsContext command to add new migration
 //update-database - to create or update database
 string? env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-if(env==null)
+if (env == null)
 {
     Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "local");
     builder.Configuration.AddJsonFile($"appsetting.json", true, true).AddEnvironmentVariables();
 }
 else
 {
-    builder.Configuration.AddJsonFile($"appsettings.json", true, true).AddJsonFile($"appsettings.{env}.json",true
-        ,true).AddEnvironmentVariables();
+    builder.Configuration.AddJsonFile($"appsettings.json", true, true).AddJsonFile($"appsettings.{env}.json", true
+        , true).AddEnvironmentVariables();
 }
 
 //builder.Services.AddAuthorization(options =>
@@ -44,7 +44,7 @@ DependencyInjection.Injectctor(builder.Services);
 
 var sqlconnection = builder.Configuration.GetConnectionString("ConnectionLink");
 
-builder.Services.AddDbContext<DbsContext>(options =>options.UseSqlServer(sqlconnection, b =>b.MigrationsAssembly("PayrollSystem")));
+builder.Services.AddDbContext<DbsContext>(options => options.UseSqlServer(sqlconnection, b => b.MigrationsAssembly("PayrollSystem")));
 builder.Services.AddDbContext<DbsContext>(options => options.UseSqlServer(sqlconnection));
 
 
@@ -76,8 +76,8 @@ builder.Services.AddAuthentication(x =>
         ValidateIssuerSigningKey = true,
         ValidIssuer = builder.Configuration["AuthConfig:Issuser"],
         ValidAudience = builder.Configuration["AuthConfig:Audience"],
-        IssuerSigningKey=new SymmetricSecurityKey(key),
-        RoleClaimType="Role",
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+        RoleClaimType = ClaimTypes.Role,
     };
 });
 
@@ -115,6 +115,10 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseCors(AllowedSpecificOrigins);
 app.UseMiddleware(typeof(ExcetionHandlingMiddleware));
+app.UseDefaultFiles(new DefaultFilesOptions
+{
+    DefaultFileNames = new List<string> { "IISConfigurationStatus.html" }  // 👈 Your new file name
+});
 app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();

@@ -6,6 +6,7 @@ using PayrollSystem.Business.HR;
 using PayrollSystem.Core.HR;
 using PayrollSystem.Entity.InputOutput.Common;
 using PayrollSystem.Entity.InputOutput.HR;
+using System.Security.Claims;
 
 
 namespace PayrollSystem.Controllers
@@ -24,13 +25,16 @@ namespace PayrollSystem.Controllers
 
         [HttpPost]
         [Route("/Admin/RegisterNewEmployee")]
-        [Authorize]
+        [Authorize(Roles = "2,3,1,6")]
         public async Task<JsonResult> RegisterNewEmployee(NewEmployeeInput newEmployeeInput)
         {
             ResponseModel response = new ResponseModel();
             try
             {
                 var currentUser = HttpContext.User;
+                var roles = HttpContext.User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value);
+                Console.WriteLine(string.Join(",", roles));
+
                 Int64 EmployeeId = Convert.ToInt64(currentUser.Claims.First(c => c.Type == "EmployeeId").Value);
                 if (EmployeeId != 0)
                 {

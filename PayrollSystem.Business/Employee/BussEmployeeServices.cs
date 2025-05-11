@@ -68,10 +68,7 @@ namespace PayrollSystem.Business.Employee
             {
                 response.Message += "Internal server error.Please try again.";
                 response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.UnknowError;
-                await _logger.InsertExceptionLogs(this.GetType().Name,
-                  Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["Action"]),
-                  ex.Message,
-                  _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
+                await _logger.InsertExceptionLogs(_httpContextAccessor.HttpContext.Request.RouteValues["action"].ToString(), this.GetType().Name, ex.Message, _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
             }
         }
         #endregion
@@ -86,7 +83,7 @@ namespace PayrollSystem.Business.Employee
                     new Claim("EmployeeId",tokenOutput.EmployeeId.ToString()),
                     new Claim("OrganisationId",tokenOutput.OrgnisationId.ToString()),
                     new Claim("OrgnisationEmail",tokenOutput.OrgnisationEmail.ToString()),
-                    new Claim("RoleId",tokenOutput.RoleId.ToString()),
+                    new Claim(ClaimTypes.Role,tokenOutput.RoleId.ToString()),
                     new Claim("DepartmentId",tokenOutput.DepartmentId.ToString()),
                     new Claim("IsActive",tokenOutput.IsActive.ToString()),
                 };
@@ -104,10 +101,7 @@ namespace PayrollSystem.Business.Employee
             }
             catch (Exception ex)
             {
-                _logger.InsertExceptionLogs(ex.Message,
-                   this.GetType().Name,
-                   Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["action"]),
-                   _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
+                _logger.InsertExceptionLogs(_httpContextAccessor.HttpContext.Request.RouteValues["action"].ToString(), this.GetType().Name, ex.Message, _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
             }
             return encodetoken;
         }
@@ -155,13 +149,40 @@ namespace PayrollSystem.Business.Employee
             {
                 response.Message += "Internal server error.Please try again.";
                 response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.UnknowError;
-                await _logger.InsertExceptionLogs(ex.Message,
-                    this.GetType().Name,
-                    Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["action"]),
-                    _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
+               await _logger.InsertExceptionLogs(_httpContextAccessor.HttpContext.Request.RouteValues["action"].ToString(), this.GetType().Name, ex.Message, _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
             }
         }
         #endregion
 
+        #region GetTodaySignInStatus
+        public async Task GetTodaySignInStatus(Int64 EmployeeId, DateTime TodayDate, ResponseModel response)
+        {
+            try
+            {
+                Int32 Result;
+                Result = await _employeeServices.GetTodaySignInStatus(EmployeeId, TodayDate, response);
+                if(response.ObjectStatusCode!=Entity.InputOutput.Common.StatusCodes.UnknowError)
+                {
+                    if(Result==3 || Result==0)
+                    {
+                        response.Message += "Employee Not Found For Provided ID and Date";
+                        response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.Exists;
+                    }
+                    else if(Result==1)
+                    {
+                        response.Message += "Employee Found For Provided ID and Date";
+                        response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.Success;
+                    }
+                }
+                response.Data = Result;
+            }
+            catch (Exception ex)
+            {
+                response.Message += "Internal Server Error, Try Again Later";
+                response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.UnknowError;
+                await _logger.InsertExceptionLogs(_httpContextAccessor.HttpContext.Request.RouteValues["action"].ToString(),this.GetType().Name,ex.Message,_httpContextAccessor.HttpContext.Request.Host.Value.Trim());
+            }
+        }
+        #endregion
     }
 }

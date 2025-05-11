@@ -8,15 +8,20 @@ namespace PayrollSystem.Core.Logs
 {
     public class LogServices : ILogServices
     {
+        #region Object Declaration
         private readonly DapperDbContext _dapperDbContext ;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        #endregion
+
+        #region Constructor
         public LogServices( DapperDbContext dapperDbContext, IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
             _dapperDbContext = dapperDbContext;
         }
+        #endregion
 
-
+        #region InsertExceptionLogs
         public async Task InsertExceptionLogs(string ClassName, string MethodName, string Exception, string SiteName)
         {
             try
@@ -39,7 +44,9 @@ namespace PayrollSystem.Core.Logs
                 Console.WriteLine(ex.Message);
             }
         }
+        #endregion
 
+        #region InsertUiExceptionLog
         public async Task InsertUiExceptionLog(UiExceptionLogInput uiExceptionLogInput, ResponseModel response)
         {
             try
@@ -64,8 +71,9 @@ namespace PayrollSystem.Core.Logs
             }
             return;
         }
+        #endregion
 
-        #region SaveUserLogs
+        #region InsertUserLogs
         public async Task InsertUserLogs(UserLogInput userLogInput, ResponseModel response)
         {
             try

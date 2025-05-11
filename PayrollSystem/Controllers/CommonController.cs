@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PayrollSystem.Business.Common;
 using PayrollSystem.Entity.InputOutput.Common;
+using System.Security.Claims;
 
 namespace PayrollSystem.Controllers
 {
@@ -27,7 +28,12 @@ namespace PayrollSystem.Controllers
             ResponseModel response = new ResponseModel();
             try
             {
-                await _BussCommonTaskServices.GetRoles(response);
+                var currentUser = HttpContext.User;
+                Int64 E_Id = Convert.ToInt64(currentUser.Claims.First(c=>c.Type== "EmployeeId").Value);
+                if(E_Id!=0)
+                {
+                    await _BussCommonTaskServices.GetRoles(response);
+                }
             }
             catch (Exception)
             {
@@ -47,7 +53,12 @@ namespace PayrollSystem.Controllers
             ResponseModel response = new ResponseModel();
             try
             {
-                await _BussCommonTaskServices.GetDepartments(response);
+                var currentUser = HttpContext.User;
+                Int64 E_Id = Convert.ToInt64(currentUser.Claims.First(c => c.Type == "EmployeeId").Value);
+                if (E_Id != 0)
+                {
+                    await _BussCommonTaskServices.GetDepartments(response);
+                }
             }
             catch (Exception)
             {
@@ -65,12 +76,13 @@ namespace PayrollSystem.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("/Employee/AllEmployee")]
-        [Authorize]
         public async Task<JsonResult> GetAllEmployee()
         {
             ResponseModel response = new ResponseModel();
             try
             {
+                var roles = HttpContext.User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value);
+                Console.WriteLine(string.Join(",", roles));
                 var currentUser = HttpContext.User;
                 Int64 OrganisationId = Convert.ToInt64(currentUser.Claims.First(c => c.Type == "OrganisationId").Value);
                 Int64 EmployeeId = Convert.ToInt64(currentUser.Claims.First(c => c.Type == "EmployeeId").Value);
@@ -118,6 +130,32 @@ namespace PayrollSystem.Controllers
             {
                 response.Message += "Internal Server Error";
                 response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.UnknowError;
+            }
+            return Json(response);
+        }
+        #endregion
+
+        #region GetOrganisationDetails
+        [HttpPost]
+        [Route("/Orgnisation")]
+        [Authorize]
+        public async Task<JsonResult> GetOrganisationDetails()
+        {
+            ResponseModel response = new ResponseModel();
+            try
+            {
+                var currentUser = HttpContext.User;
+                Int64 EId = Convert.ToInt64(currentUser.Claims.First(c => c.Type == "EmployeeId").Value);
+                Int64 OrganisationId = Convert.ToInt64(currentUser.Claims.First(e=>e.Type== "OrganisationId").Value);
+                if(EId!=0)
+                {
+                    await _BussCommonTaskServices.GetOrganisationDetails(OrganisationId, response);
+                }
+            }
+            catch (Exception)
+            {
+                response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.UnknowError;
+                response.Message += "Internal Server Error, Please try again";
             }
             return Json(response);
         }

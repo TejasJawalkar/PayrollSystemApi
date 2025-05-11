@@ -1,11 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc.Filters;
 using PayrollSystem.Entity.InputOutput.Common;
-using PayrollSystem.Entity.InputOutput.Login;
-using PayrollSystem.Entity.Models.Employee;
-using System.Data;
-using System.Globalization;
-using System.IdentityModel.Tokens.Jwt;
 
 namespace PayrollSystem.Filters
 {
@@ -33,7 +29,7 @@ namespace PayrollSystem.Filters
                     if (EmployeeId != null)
                     {
                         var OrgnisationId = token1.Claims.FirstOrDefault(c => c.Type == "OrganisationId")?.Value;
-                        var Role = token1.Claims.FirstOrDefault(c => c.Type == "RoleId")?.Value;
+                        var Role = token1.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                         var TokenExpiryDate = token1.ValidTo;
                         DateTime UTCTime = System.DateTime.UtcNow;
                         DateTime IndianTime = TokenExpiryDate.AddHours(5.5);
@@ -62,6 +58,7 @@ namespace PayrollSystem.Filters
             allowedApis.Add("AddOrganization");
             allowedApis.Add("AddRoles");
             allowedApis.Add("AddDepartments");
+            allowedApis.Add("GetDepartments");
 
             return allowedApis;
         }

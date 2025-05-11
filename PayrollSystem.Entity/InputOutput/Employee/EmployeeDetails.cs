@@ -1,10 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿#region Imports
+using Microsoft.AspNetCore.Mvc;
+#endregion
 
 namespace PayrollSystem.Entity.InputOutput.Employee
 {
+    #region EmployeeDetails
     public class EmployeeDetails
     {
-        
+        public Int64 EmployeeId { get; set; }
+        public Int64 OrganizationId { get; set; }
         public String EmployeeName { get; set; }
         public String OrganisationEmail { get; set; }
         public String PersonalEmail { get; set; }
@@ -15,10 +19,21 @@ namespace PayrollSystem.Entity.InputOutput.Employee
         public String OrgnizationName { get; set; }
         public Boolean IsActive { get; set; } = true;
     }
+    #endregion
 
+    #region EmployeeLoginInput
     public class EmployeeLoginInput
     {
         [FromForm] public String UserName { get; set; }
         [FromForm] public String Password { get; set; }
     }
+    #endregion
+
+    #region EmployeeIdInput
+    public class IdInput
+
+    {
+        [FromForm] Int64 Id { get; set; }
+    }
+    #endregion
 }

@@ -8,5 +8,6 @@ namespace PayrollSystem.Business.Common
         public Task GetAllEmployee(Int64 OrganisationId, ResponseModel response);
         public Task GetRoles(ResponseModel response);
         public Task GetDepartments(ResponseModel response);
+        public Task GetOrganisationDetails(Int64 OrganisationId, ResponseModel response);
     }
 }
