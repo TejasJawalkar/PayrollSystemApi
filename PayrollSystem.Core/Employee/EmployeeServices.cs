@@ -1,11 +1,12 @@
 ﻿#region Imports
 using Dapper;
-using PayrollSystem.Core.Common;
+using Microsoft.EntityFrameworkCore;
 using PayrollSystem.Core.Logs;
 using PayrollSystem.Data.Common;
 using PayrollSystem.Entity.InputOutput.Common;
 using PayrollSystem.Entity.InputOutput.Employee;
 using PayrollSystem.Entity.InputOutput.Login;
+using PayrollSystem.Entity.Models.Employee;
 #endregion
 
 namespace PayrollSystem.Core.Employee
@@ -17,15 +18,17 @@ namespace PayrollSystem.Core.Employee
         private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ILogServices _logServices;
+        private readonly DbsContext _dbsContext;
         #endregion
 
         #region Constructor
-        public EmployeeServices(DapperDbContext dapperDbContext,IConfiguration configuration, IHttpContextAccessor httpContextAccessor, ILogServices logServices)
+        public EmployeeServices(DapperDbContext dapperDbContext, IConfiguration configuration, IHttpContextAccessor httpContextAccessor, ILogServices logServices, DbsContext dbsContext)
         {
-            _configuration = configuration; 
-            _dapperDbContext = dapperDbContext; 
-            _httpContextAccessor = httpContextAccessor; 
+            _configuration = configuration;
+            _dapperDbContext = dapperDbContext;
+            _httpContextAccessor = httpContextAccessor;
             _logServices = logServices;
+            _dbsContext = dbsContext;
         }
         #endregion
 
@@ -38,9 +41,9 @@ namespace PayrollSystem.Core.Employee
                 var procedure = "LoginEmployee";
                 var parameters = new DynamicParameters();
                 parameters.Add("UserName", employeeLoginInput.UserName, System.Data.DbType.String, System.Data.ParameterDirection.Input);
-                parameters.Add("Password", employeeLoginInput.Password, System.Data.DbType.String,System.Data.ParameterDirection.Input);
+                parameters.Add("Password", employeeLoginInput.Password, System.Data.DbType.String, System.Data.ParameterDirection.Input);
 
-                using (var con=_dapperDbContext.CreateConnection())
+                using (var con = _dapperDbContext.CreateConnection())
                 {
                     tokenOutput = await con.QueryFirstOrDefaultAsync<TokenOutput>(procedure, parameters, commandType: System.Data.CommandType.StoredProcedure);
                 }
@@ -119,6 +122,141 @@ namespace PayrollSystem.Core.Employee
                 await _logServices.InsertExceptionLogs( Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["action"]), this.GetType().Name, ex.Message, _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
             }
             return result;
+        }
+        #endregion
+
+        #region SignInStatus
+        public async Task<Int32> SignInStatus(EmployeeFormInput employeeFormInput, ResponseModel response)
+        {
+            Int32 Result = 0;
+            try
+            {
+                var data = _dbsContext.DailyTimeSheet.Where(r => r.EmployeeId == employeeFormInput.EmployeeId && r.LoginDate == employeeFormInput.CurrentDate).FirstOrDefault();
+                if (data == null)
+                {
+                    Result = 3;
+                }
+                else
+                {
+                    Result = 1;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Message += "Internal server error.Please try again.";
+                response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.UnknowError;
+                await _logServices.InsertExceptionLogs(Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["action"]), this.GetType().Name, ex.Message, _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
+            }
+            return await Task.FromResult(Result);
+        }
+        #endregion
+
+        #region TotalHoursWorkedCalculation
+        public async Task<DailyTimeSheet> TotalHoursWorkedCalculation(Int64 EmployeeId, DateTime LoginDate)
+        {
+            DailyTimeSheet data = null;
+            try
+            {
+                data = await _dbsContext.DailyTimeSheet.Where(r => r.EmployeeId == EmployeeId && r.LoginDate == LoginDate).FirstOrDefaultAsync();
+                return data;
+            }
+            catch (Exception ex)
+            {
+                await _logServices.InsertExceptionLogs(Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["action"]), this.GetType().Name, ex.Message.ToString(), _httpContextAccessor.HttpContext.Request.Host.Value.Trim().ToString());
+                return null;
+            }
+        }
+        #endregion
+
+        #region AddUpdateSignInSignOut
+        public async Task<Int32> AddUpdateSignInSignOut(LoginLogoutFormInput loginLogoutFormInput, ResponseModel response)
+        {
+            Int32 Result = 0;
+            try
+            {
+                var procedure = "";
+                var parameters = new DynamicParameters();
+
+                var data = _dbsContext.DailyTimeSheet.Where(r => r.EmployeeId == loginLogoutFormInput.EmployeeId && r.LoginDate == loginLogoutFormInput.LoginDate).FirstOrDefault();
+                if (data == null || data.EmployeeId == 0)
+                {
+                    procedure = "InsertLoginLogout";
+                    parameters.Add("EmployeeId ", loginLogoutFormInput.EmployeeId, System.Data.DbType.Int64, System.Data.ParameterDirection.Input);
+                    parameters.Add("LoginDate ", loginLogoutFormInput.LoginDate.ToShortDateString(), System.Data.DbType.DateTime, System.Data.ParameterDirection.Input);
+                    parameters.Add("LoginTime ", loginLogoutFormInput.LoginTime.ToShortTimeString(), System.Data.DbType.DateTime, System.Data.ParameterDirection.Input);
+                    parameters.Add("LoginLocation ", loginLogoutFormInput.LoginLocation, System.Data.DbType.String, System.Data.ParameterDirection.Input);
+                    parameters.Add("Flag", 2, System.Data.DbType.Int32, System.Data.ParameterDirection.Input);
+                    Result = 1;
+
+                }
+                else
+                {
+                    procedure = "UpdateLoginLogout";
+                    parameters.Add("EmployeeId ", loginLogoutFormInput.EmployeeId, System.Data.DbType.Int64, System.Data.ParameterDirection.Input);
+                    parameters.Add("LogOutDate ", loginLogoutFormInput.LogOutDate, System.Data.DbType.DateTime, System.Data.ParameterDirection.Input);
+                    parameters.Add("LogOutTime ", loginLogoutFormInput.LogOutTime, System.Data.DbType.DateTime, System.Data.ParameterDirection.Input);
+                    parameters.Add("LogoutLocation", loginLogoutFormInput.LogoutLocation, System.Data.DbType.String, System.Data.ParameterDirection.Input);
+                    parameters.Add("TotalHoursWorked ", loginLogoutFormInput.TotalHoursWorked, System.Data.DbType.Int32, System.Data.ParameterDirection.Input);
+                    parameters.Add("Flag", 2, System.Data.DbType.Int32, System.Data.ParameterDirection.Input);
+                    Result = 2;
+                }
+                using (var con = _dapperDbContext.CreateConnection())
+                {
+                    await con.ExecuteAsync(procedure, parameters, commandType: System.Data.CommandType.StoredProcedure);
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Message += "Internal server error.Please try again.";
+                response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.UnknowError;
+                await _logServices.InsertExceptionLogs(Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["action"]), this.GetType().Name, ex.Message, _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
+            }
+            return Result;
+        }
+        #endregion
+
+        #region AddNewLeave
+        /// <summary>
+        /// Insert New Record of Leave
+        /// </summary>
+        /// <param name="userLeaveInput"></param>
+        /// <param name="response"></param>
+        /// <returns></returns>
+        public async Task<Int32> AddNewLeave(UserLeaveInput userLeaveInput, ResponseModel response)
+        {
+            Int32 Result = 0;
+            try
+            {
+                var procedure = "InsertEmployeeLeave";
+                var parameters = new DynamicParameters();
+                parameters.Add("EmployeeId", userLeaveInput.EmployeeId, System.Data.DbType.Int64, System.Data.ParameterDirection.Input);
+                parameters.Add("AppliedDate", userLeaveInput.AppliedDate.ToShortDateString(), System.Data.DbType.DateTime, System.Data.ParameterDirection.Input);
+                parameters.Add("Status", userLeaveInput.Status, System.Data.DbType.Int32, System.Data.ParameterDirection.Input);
+                parameters.Add("AppliedReason", userLeaveInput.AppliedReason, System.Data.DbType.String, System.Data.ParameterDirection.Input);
+                parameters.Add("FromDate", userLeaveInput.FromDate.ToShortDateString(), System.Data.DbType.DateTime, System.Data.ParameterDirection.Input);
+                parameters.Add("ToDate", userLeaveInput.ToDate.ToShortDateString(), System.Data.DbType.DateTime, System.Data.ParameterDirection.Input);
+                parameters.Add("NoofDay", userLeaveInput.NoofDays, System.Data.DbType.Double, System.Data.ParameterDirection.Input);
+                parameters.Add("result", System.Data.DbType.Int32, direction: System.Data.ParameterDirection.Output);
+
+                using (var con = _dapperDbContext.CreateConnection())
+                {
+                    Result = await con.ExecuteAsync(procedure, parameters, commandType: System.Data.CommandType.StoredProcedure).ContinueWith(c => parameters.Get<Int32>("result"));
+                }
+            }
+            catch (Exception ex)
+            {
+                await _logServices.InsertExceptionLogs(Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["action"]), this.GetType().Name, ex.Message, _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
+                response.Message += "Internal server error.Please try again.";
+                response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.UnknowError;
+            }
+            return Result;
+        }
+        #endregion
+
+        #region GetLeaveStatus
+        public Task<OutputList> GetLeaveStatus(long EmployeeId, ResponseModel response)
+        {
+            throw new NotImplementedException();
         }
         #endregion
     }

@@ -1,17 +1,15 @@
 ﻿
 #region
-using Azure;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using Microsoft.IdentityModel.Tokens;
-using PayrollSystem.Business.Common;
-using PayrollSystem.Core.Common;
 using PayrollSystem.Core.Employee;
 using PayrollSystem.Core.Logs;
 using PayrollSystem.Entity.InputOutput.Common;
 using PayrollSystem.Entity.InputOutput.Employee;
 using PayrollSystem.Entity.InputOutput.Login;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+using PayrollSystem.Entity.Models.Employee;
 #endregion
 
 namespace PayrollSystem.Business.Employee
@@ -62,13 +60,31 @@ namespace PayrollSystem.Business.Employee
                         response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.Error;
                     }
                 }
-                response.Data = tokenOutput.EmployeeId == 0 ? null:authenticationToken;
+                response.Data = tokenOutput.EmployeeId == 0 ? null : authenticationToken;
             }
             catch (Exception ex)
             {
                 response.Message += "Internal server error.Please try again.";
                 response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.UnknowError;
-                await _logger.InsertExceptionLogs(_httpContextAccessor.HttpContext.Request.RouteValues["action"].ToString(), this.GetType().Name, ex.Message, _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
+                await _logger.InsertExceptionLogs(this.GetType().Name,
+                  Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["Action"]),
+                  ex.Message,
+                  _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
+                  Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["Action"]),
+                  ex.Message,
+                  _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
+                  Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["Action"]),
+                  ex.Message,
+                  _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
+                  Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["Action"]),
+                  ex.Message,
+                  _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
+                  Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["Action"]),
+                  ex.Message,
+                  _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
+                  Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["Action"]),
+                  ex.Message,
+                  _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
             }
         }
         #endregion
@@ -101,7 +117,10 @@ namespace PayrollSystem.Business.Employee
             }
             catch (Exception ex)
             {
-                _logger.InsertExceptionLogs(_httpContextAccessor.HttpContext.Request.RouteValues["action"].ToString(), this.GetType().Name, ex.Message, _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
+                _logger.InsertExceptionLogs(ex.Message,
+                   this.GetType().Name,
+                   Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["action"]),
+                   _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
             }
             return encodetoken;
         }
@@ -149,40 +168,13 @@ namespace PayrollSystem.Business.Employee
             {
                 response.Message += "Internal server error.Please try again.";
                 response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.UnknowError;
-               await _logger.InsertExceptionLogs(_httpContextAccessor.HttpContext.Request.RouteValues["action"].ToString(), this.GetType().Name, ex.Message, _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
+                await _logger.InsertExceptionLogs(ex.Message,
+                    this.GetType().Name,
+                    Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["action"]),
+                    _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
             }
         }
         #endregion
 
-        #region GetTodaySignInStatus
-        public async Task GetTodaySignInStatus(Int64 EmployeeId, DateTime TodayDate, ResponseModel response)
-        {
-            try
-            {
-                Int32 Result;
-                Result = await _employeeServices.GetTodaySignInStatus(EmployeeId, TodayDate, response);
-                if(response.ObjectStatusCode!=Entity.InputOutput.Common.StatusCodes.UnknowError)
-                {
-                    if(Result==3 || Result==0)
-                    {
-                        response.Message += "Employee Not Found For Provided ID and Date";
-                        response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.Exists;
-                    }
-                    else if(Result==1)
-                    {
-                        response.Message += "Employee Found For Provided ID and Date";
-                        response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.Success;
-                    }
-                }
-                response.Data = Result;
-            }
-            catch (Exception ex)
-            {
-                response.Message += "Internal Server Error, Try Again Later";
-                response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.UnknowError;
-                await _logger.InsertExceptionLogs(_httpContextAccessor.HttpContext.Request.RouteValues["action"].ToString(),this.GetType().Name,ex.Message,_httpContextAccessor.HttpContext.Request.Host.Value.Trim());
-            }
-        }
-        #endregion
     }
 }

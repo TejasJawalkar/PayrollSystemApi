@@ -27,13 +27,4 @@ namespace PayrollSystem.Entity.InputOutput.Employee
         [FromForm] public String UserName { get; set; }
         [FromForm] public String Password { get; set; }
     }
-    #endregion
-
-    #region EmployeeIdInput
-    public class IdInput
-
-    {
-        [FromForm] Int64 Id { get; set; }
-    }
-    #endregion
 }

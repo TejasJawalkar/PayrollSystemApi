@@ -19,7 +19,7 @@ namespace PayrollSystem.Data.Common
         public DbSet<ExceptionLog> ExceptionLogs { get; set; }
         public DbSet<UserLogs> UserLogs { get; set; }
         public DbSet<DailyTimeSheet> DailyTimeSheet { get; set; }
-        public DbSet<UserLeave> UserLeaves { get; set; }
+        public DbSet<UserLeave> EmployeeLeaves { get; set; }
         public DbSet<Department> Departments { get; set; }
         public DbSet<Designation> Roles { get; set; }
         public DbSet<ReportingManagers> Managers { get; set; }
@@ -33,6 +33,12 @@ namespace PayrollSystem.Data.Common
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             #region One To One Relationship
+            modelBuilder.Entity<Employee>()
+                .HasOne(ela => ela.EmployeeLeavesAssigned)
+                .WithOne(e => e.Employee)
+                .HasForeignKey<EmployeeLeavesAssigned>(ed => ed.EmployeeLeavesAssignedId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<Employee>()
                 .HasOne(ed => ed.EmployeeDetails)
                 .WithOne(e => e.Employee)

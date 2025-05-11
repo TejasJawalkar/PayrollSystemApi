@@ -6,7 +6,6 @@ using PayrollSystem.Entity.InputOutput.Common;
 using PayrollSystem.Entity.InputOutput.Employee;
 #endregion
 
-
 namespace PayrollSystem.Controllers
 {
     public class EmployeeController : Controller

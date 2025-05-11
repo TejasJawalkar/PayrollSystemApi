@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PayrollSystem.Data.Common;
 
@@ -11,9 +12,10 @@ using PayrollSystem.Data.Common;
 namespace PayrollSystem.Migrations
 {
     [DbContext(typeof(DbsContext))]
-    partial class DbsContextModelSnapshot : ModelSnapshot
+    [Migration("20250108143359_DailyTimeSheetPropertiesChanged")]
+    partial class DailyTimeSheetPropertiesChanged
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,6 +33,7 @@ namespace PayrollSystem.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("TimeSheetId"), 1L, 1);
 
                     b.Property<string>("AttendanceFlag")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("EmployeeId")
@@ -39,7 +42,7 @@ namespace PayrollSystem.Migrations
                     b.Property<DateTime?>("LogOutDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("LogOutTime")
+                    b.Property<DateTime>("LogOutTime")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("LoginDate")
@@ -53,10 +56,11 @@ namespace PayrollSystem.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("LogoutLocation")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double?>("TotalHoursWorked")
-                        .HasColumnType("float");
+                    b.Property<int>("TotalHoursWorked")
+                        .HasColumnType("int");
 
                     b.HasKey("TimeSheetId");
 
@@ -114,9 +118,6 @@ namespace PayrollSystem.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("EmployeeId"), 1L, 1);
 
                     b.Property<long>("DepartmentId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("EmployeeLeavesAssignedId")
                         .HasColumnType("bigint");
 
                     b.Property<long>("OrganizationId")
@@ -187,22 +188,6 @@ namespace PayrollSystem.Migrations
                         .IsUnique();
 
                     b.ToTable("EmployeeDetails");
-                });
-
-            modelBuilder.Entity("PayrollSystem.Entity.Models.Employee.EmployeeLeavesAssigned", b =>
-                {
-                    b.Property<long>("EmployeeLeavesAssignedId")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("ForYear")
-                        .HasColumnType("int");
-
-                    b.Property<double>("TotalLeaves")
-                        .HasColumnType("float");
-
-                    b.HasKey("EmployeeLeavesAssignedId");
-
-                    b.ToTable("YearlyLeavesAssigned");
                 });
 
             modelBuilder.Entity("PayrollSystem.Entity.Models.Employee.EmployeeManagers", b =>
@@ -387,19 +372,11 @@ namespace PayrollSystem.Migrations
                     b.Property<DateTime>("FromDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsApproved")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsArchived")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsRejected")
-                        .HasColumnType("bit");
-
                     b.Property<double>("NoofDays")
                         .HasColumnType("float");
 
                     b.Property<string>("RejectedReason")
+                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
@@ -414,7 +391,7 @@ namespace PayrollSystem.Migrations
 
                     b.HasIndex("EmployeeId");
 
-                    b.ToTable("EmployeeLeaves");
+                    b.ToTable("UserLeaves");
                 });
 
             modelBuilder.Entity("PayrollSystem.Entity.Models.Logging.ExceptionLog", b =>
@@ -484,61 +461,6 @@ namespace PayrollSystem.Migrations
                     b.ToTable("UserLogs");
                 });
 
-            modelBuilder.Entity("PayrollSystem.Entity.Models.Models.SystemConfigurationModel.RoutingNavigationChildModel", b =>
-                {
-                    b.Property<long>("ChildRouteID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ChildRouteID"), 1L, 1);
-
-                    b.Property<string>("IconString")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("MainRouteId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("RouteName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RouteUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ChildRouteID");
-
-                    b.HasIndex("MainRouteId");
-
-                    b.ToTable("RoutingNavigationChild");
-                });
-
-            modelBuilder.Entity("PayrollSystem.Entity.Models.Models.SystemConfigurationModel.RoutingNavigationModel", b =>
-                {
-                    b.Property<long>("MainRouteId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("MainRouteId"), 1L, 1);
-
-                    b.Property<string>("AuthorizedUsers")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("IconString")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RouteName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("MainRouteId");
-
-                    b.ToTable("RoutingNavigationMain");
-                });
-
             modelBuilder.Entity("PayrollSystem.Entity.Models.Employee.DailyTimeSheet", b =>
                 {
                     b.HasOne("PayrollSystem.Entity.Models.Employee.Employee", "Employee")
@@ -590,17 +512,6 @@ namespace PayrollSystem.Migrations
                     b.HasOne("PayrollSystem.Entity.Models.Employee.Employee", "Employee")
                         .WithOne("EmployeeDetails")
                         .HasForeignKey("PayrollSystem.Entity.Models.Employee.EmployeeDetails", "EmployeeId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Employee");
-                });
-
-            modelBuilder.Entity("PayrollSystem.Entity.Models.Employee.EmployeeLeavesAssigned", b =>
-                {
-                    b.HasOne("PayrollSystem.Entity.Models.Employee.Employee", "Employee")
-                        .WithOne("EmployeeLeavesAssigned")
-                        .HasForeignKey("PayrollSystem.Entity.Models.Employee.EmployeeLeavesAssigned", "EmployeeLeavesAssignedId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -659,17 +570,6 @@ namespace PayrollSystem.Migrations
                     b.Navigation("Employee");
                 });
 
-            modelBuilder.Entity("PayrollSystem.Entity.Models.Models.SystemConfigurationModel.RoutingNavigationChildModel", b =>
-                {
-                    b.HasOne("PayrollSystem.Entity.Models.Models.SystemConfigurationModel.RoutingNavigationModel", "RoutingNavigationModel")
-                        .WithMany("RoutingChildModels")
-                        .HasForeignKey("MainRouteId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("RoutingNavigationModel");
-                });
-
             modelBuilder.Entity("PayrollSystem.Entity.Models.Employee.Department", b =>
                 {
                     b.Navigation("Employee");
@@ -685,9 +585,6 @@ namespace PayrollSystem.Migrations
                     b.Navigation("DailyTimeSheets");
 
                     b.Navigation("EmployeeDetails")
-                        .IsRequired();
-
-                    b.Navigation("EmployeeLeavesAssigned")
                         .IsRequired();
 
                     b.Navigation("EmployeeManagers");
@@ -715,11 +612,6 @@ namespace PayrollSystem.Migrations
             modelBuilder.Entity("PayrollSystem.Entity.Models.Employee.ReportingManagers", b =>
                 {
                     b.Navigation("EmployeeManagers");
-                });
-
-            modelBuilder.Entity("PayrollSystem.Entity.Models.Models.SystemConfigurationModel.RoutingNavigationModel", b =>
-                {
-                    b.Navigation("RoutingChildModels");
                 });
 #pragma warning restore 612, 618
         }
