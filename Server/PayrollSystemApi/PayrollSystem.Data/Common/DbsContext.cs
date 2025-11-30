@@ -13,20 +13,20 @@ namespace PayrollSystem.Data.Common
         #endregion
 
         #region All DbSet
-        public DbSet<Employee> Employee { get; set; }
-        public DbSet<PaymentData> PaymentDetails { get; set; }
-        public DbSet<Orgnisations> Oragnizations { get; set; }
-        public DbSet<ExceptionLog> ExceptionLogs { get; set; }
-        public DbSet<UserLogs> UserLogs { get; set; }
-        public DbSet<DailyTimeSheet> DailyTimeSheet { get; set; }
-        public DbSet<UserLeave> EmployeeLeaves { get; set; }
-        public DbSet<Department> Departments { get; set; }
-        public DbSet<Designation> Roles { get; set; }
-        public DbSet<ReportingManagers> Managers { get; set; }
-        public DbSet<EmployeeManagers> EmployeeManagers { get; set; }
-        public DbSet<EmployeeDetails> EmployeeDetails { get; set; }
-        public DbSet<RoutingNavigationModel> RoutingNavigationMain { get; set; }
-        public DbSet<RoutingNavigationChildModel> RoutingNavigationChild { get; set; }
+        public DbSet<Employee> TblEmployee { get; set; }
+        public DbSet<PaymentData> TblPaymentDetails { get; set; }
+        public DbSet<Orgnisations> TblOragnizations { get; set; }
+        public DbSet<ExceptionLog> TsyExceptionLogs { get; set; }
+        public DbSet<UserLogs> TsyUserLogs { get; set; }
+        public DbSet<DailyTimeSheet> TblDailyTimeSheet { get; set; }
+        public DbSet<UserLeave> TblEmployeeLeaves { get; set; }
+        public DbSet<Department> TblDepartments { get; set; }
+        public DbSet<Designation> TblRoles { get; set; }
+        public DbSet<ReportingManagers> TblManagers { get; set; }
+        public DbSet<EmployeeManagers> TblEmployeeManagers { get; set; }
+        public DbSet<EmployeeDetails> TblEmployeeDetails { get; set; }
+        public DbSet<RoutingNavigationModel> TblRoutingNavigationMain { get; set; }
+        public DbSet<RoutingNavigationChildModel> TblRoutingNavigationChild { get; set; }
         #endregion
 
         #region OnModelCreating

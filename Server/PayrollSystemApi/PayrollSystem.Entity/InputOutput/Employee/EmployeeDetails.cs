@@ -27,4 +27,5 @@ namespace PayrollSystem.Entity.InputOutput.Employee
         [FromForm] public String UserName { get; set; }
         [FromForm] public String Password { get; set; }
     }
+    #endregion
 }

@@ -28,6 +28,10 @@
 		<ProjectReference Include="..\PayrollSystem.Entity\PayrollSystem.Entity.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="bin\Debug\net6.0\" />
+	</ItemGroup>
+
 	<!-- Pre-build target to kill w3wp.exe if it locks DLL -->
 	<Target Name="KillIISWorker" BeforeTargets="Build">
 		<Exec Command="taskkill /F /IM w3wp.exe" ContinueOnError="true" />

@@ -12,4 +12,5 @@ namespace PayrollSystem.Business.Employee
         public Task NewRegister(String EmailId, String Password, ResponseModel response);
         public Task GetTodaySignInStatus(Int64 EmployeeId, DateTime TodayDate, ResponseModel response);
     }
+    #endregion
 }

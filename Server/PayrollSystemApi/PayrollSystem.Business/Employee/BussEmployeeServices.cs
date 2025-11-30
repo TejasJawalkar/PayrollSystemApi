@@ -9,7 +9,6 @@ using PayrollSystem.Core.Logs;
 using PayrollSystem.Entity.InputOutput.Common;
 using PayrollSystem.Entity.InputOutput.Employee;
 using PayrollSystem.Entity.InputOutput.Login;
-using PayrollSystem.Entity.Models.Employee;
 #endregion
 
 namespace PayrollSystem.Business.Employee
@@ -67,21 +66,6 @@ namespace PayrollSystem.Business.Employee
                 response.Message += "Internal server error.Please try again.";
                 response.ObjectStatusCode = Entity.InputOutput.Common.StatusCodes.UnknowError;
                 await _logger.InsertExceptionLogs(this.GetType().Name,
-                  Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["Action"]),
-                  ex.Message,
-                  _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
-                  Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["Action"]),
-                  ex.Message,
-                  _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
-                  Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["Action"]),
-                  ex.Message,
-                  _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
-                  Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["Action"]),
-                  ex.Message,
-                  _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
-                  Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["Action"]),
-                  ex.Message,
-                  _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
                   Convert.ToString(_httpContextAccessor.HttpContext.Request.RouteValues["Action"]),
                   ex.Message,
                   _httpContextAccessor.HttpContext.Request.Host.Value.Trim());
@@ -175,6 +159,11 @@ namespace PayrollSystem.Business.Employee
             }
         }
         #endregion
+
+        public Task GetTodaySignInStatus(long EmployeeId, DateTime TodayDate, ResponseModel response)
+        {
+            throw new NotImplementedException();
+        }
 
     }
 }

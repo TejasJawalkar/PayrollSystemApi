@@ -2,6 +2,53 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
+##################################
+# Global ignores for .NET & VS
+##################################
+
+# Visual Studio cache folders
+.vs/
+*/.vs/
+**/.vs/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.userprefs
+
+# Build results
+bin/
+obj/
+**/bin/
+**/obj/
+
+# Debug & Release folders
+Debug/
+Release/
+x64/
+x86/
+build/
+
+# NuGet packages
+*.nupkg
+packages/
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# Rider / JetBrains
+.idea/
+*.sln.iml
+
+##################################
+# your project specific ignores
+##################################
+
 /PayrollSystem.Business/bin/Debug/net6.0
 /PayrollSystem/bin
 /PayrollSystem/obj
@@ -12,7 +59,6 @@
 /ExceptionHandling/bin/Debug/net6.0
 /ExceptionHandling/obj
 /PayrollSystem.Business/obj
-/.vs
 /PayrollSystem.Core/obj
 /PayrollSystem.Data/obj
 /PayrollSystem.Data/bin/Debug/net6.0

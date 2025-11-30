@@ -1,12 +1,10 @@
-﻿using System.Security.Claims;
-using System.Text;
+﻿using System.Text;
 using ExceptionHandling;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-//using Microsoft.EntityFrameworkCore;
 using PayrollSystem.Data.Common;
 using PayrollSystem.Filters;
 using PayrollSystem.Injection;
@@ -15,8 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseIISIntegration();
 
 string AllowedSpecificOrigins = "CorsPolicy";
-//Add - Migration InitialMigration - Context DbsContext command to add new migration
-//update-database - to create or update database
+
 string? env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 if (env == null)
 {
@@ -36,6 +33,7 @@ else
 //        policy.RequireClaim("Role", "2", "3", "4", "5");
 //    });
 //});
+
 builder.Services.AddHttpClient();
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 builder.Services.AddOptions();
@@ -70,6 +68,7 @@ builder.Services.AddAuthentication(x =>
     p.SaveToken = true;
     p.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
     {
+
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateLifetime = true,
@@ -77,7 +76,7 @@ builder.Services.AddAuthentication(x =>
         ValidIssuer = builder.Configuration["AuthConfig:Issuser"],
         ValidAudience = builder.Configuration["AuthConfig:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(key),
-        RoleClaimType = ClaimTypes.Role,
+        ClockSkew = TimeSpan.Zero
     };
 });
 
@@ -115,10 +114,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseCors(AllowedSpecificOrigins);
 app.UseMiddleware(typeof(ExcetionHandlingMiddleware));
-app.UseDefaultFiles(new DefaultFilesOptions
-{
-    DefaultFileNames = new List<string> { "IISConfigurationStatus.html" }  // 👈 Your new file name
-});
 app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
